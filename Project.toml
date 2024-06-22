@@ -1,0 +1,15 @@
+name = "SpeciesInteractionSamplers"
+uuid = "52128aff-513d-4647-bfdb-f540a36539f5"
+authors = ["michael d. catchen <mdcatchen@gmail.com>"]
+version = "0.0.1"
+
+[deps]
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+NeutralLandscapes = "71847384-8354-4223-ac08-659a5128069f"
+ProfileView = "c46f51b8-102a-5cf2-8d2c-8597cb0e0da7"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+SpeciesInteractionNetworks = "49e116ef-912f-4766-9e56-896a49944adc"
+Term = "22787eb5-b846-44ae-b979-8e399b8463ab"
+TestItems = "1c621080-faea-4a02-84b6-bbd5e436b8fe"
+UnicodePlots = "b8865327-cd53-5732-bb35-84acbb429228"
