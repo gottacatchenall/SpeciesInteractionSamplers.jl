@@ -1,8 +1,5 @@
 using Documenter, DocumenterVitepress
 
-using Pkg
-Pkg.add(path="..")
-
 using SpeciesInteractionSamplers
 
 makedocs(;
