@@ -12,8 +12,7 @@ using Distributions
 using NeutralLandscapes
 using LinearAlgebra
 using Random
-using SpeciesInteractionNetworks: Binary, Quantitative, Unipartite, SpeciesInteractionNetwork
-using SpeciesInteractionNetworks: interactions, simplify, subgraph
+using SpeciesInteractionNetworks: SpeciesInteractionNetwork, interactions, Unipartite, Binary, Quantitative, subgraph, simplify
 using Term
 using TestItems
 using UnicodePlots
@@ -45,7 +44,6 @@ export NeutrallyForbiddenLinks
 export DetectionModel
 export RelativeAbundanceScaled
 
-export Abundance
 export AbundanceTrait
 export RelativeAbundance, Density, Count
 
@@ -64,6 +62,7 @@ export Occurrence
 
 export occurrence
 
+#export Binary, Probability
 
 # Network utils
 export mirror, aggregate
@@ -71,14 +70,11 @@ export species, numspecies
 
 include("types.jl")
 include("species.jl")
-include("scale.jl")
 include("network.jl")
 include("abundance.jl")
 include("range.jl")
 include("phenology.jl")
 include("occupancy.jl")
-
-include("map.jl")
 
 include("possible.jl")
 include("realizable.jl")
