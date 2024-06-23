@@ -1,6 +1,5 @@
 using Documenter, DocumenterVitepress
 
-push!(LOAD_PATH, "../src/")
 using SpeciesInteractionSamplers
 
 makedocs(;
