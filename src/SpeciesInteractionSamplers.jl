@@ -1,18 +1,24 @@
 module SpeciesInteractionSamplers
 
+INTERACTION_REPL = true
+_interactive_repl() = INTERACTION_REPL
+
+_DEFAULT_SPECIES_RICHNESS = 30
+_DEFAULT_NUM_TIMESTEPS = 100
+_DEFAULT_SPATIAL_RESOLUTION = (50, 50)
+
 using CairoMakie
 using Distributions
 using NeutralLandscapes
+using LinearAlgebra
 using Random
-using SpeciesInteractionNetworks: SpeciesInteractionNetwork
+using SpeciesInteractionNetworks: Binary, Quantitative, Unipartite, SpeciesInteractionNetwork
+using SpeciesInteractionNetworks: interactions, simplify, subgraph
 using Term
 using TestItems
 using UnicodePlots
 
 import SpeciesInteractionNetworks
-
-INTERACTION_REPL = true
-_interactive_repl() = INTERACTION_REPL
 
 export generate
 export possible
@@ -57,7 +63,6 @@ export Occurrence
 
 export occurrence
 
-#export Binary, Probability
 
 # Network utils
 export mirror, aggregate
@@ -70,6 +75,8 @@ include("abundance.jl")
 include("range.jl")
 include("phenology.jl")
 include("occupancy.jl")
+
+include("map.jl")
 
 include("possible.jl")
 include("realizable.jl")
