@@ -20,10 +20,13 @@ end
 
 
 struct TrophicScaling <: AbundanceGenerator end
-struct NormalizedLogNormal <: AbundanceGenerator end
 
-function generate(::NormalizedLogNormal, net::N) where {N<:Network}
-    ra = rand(Truncated(LogNormal(0, 1), 0, Inf), numspecies(net))
+@kwdef struct NormalizedLogNormal <: AbundanceGenerator
+    σ = 1.0
+end
+
+function generate(nln::NormalizedLogNormal, net::N) where {N<:Network}
+    ra = rand(Truncated(LogNormal(0, nln.σ), 0, Inf), numspecies(net))
     ra ./= sum(ra)
     return Abundance{RelativeAbundance}(species(net), ra)
 end

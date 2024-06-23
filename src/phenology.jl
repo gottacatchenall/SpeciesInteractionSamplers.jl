@@ -23,12 +23,14 @@ Base.@kwdef struct UniformPhenology{I<:Integer} <: PhenologyGenerator
     timespan::I = 100
     minimum_length::I = 5
 end
-function generate(pg::UniformPhenology) 
-    T, minlength = pg.timespan, pg.minimum_length 
+function generate(pg::UniformPhenology)
+    T, minlength = pg.timespan, pg.minimum_length
     timeseries = zeros(Bool, T)
 
+    # TODO: technically this is biased by using minlength padded only from the lower side,
+    # so the mean number of species is at (0.5T + 0.5minlength)
     start = rand(DiscreteUniform(1, T - minlength - 1))
-    finish = rand(DiscreteUniform(start+minlength, T))
+    finish = rand(DiscreteUniform(start + minlength, T))
     timeseries[start:finish] .= true
     Phenology(timeseries)
 end
@@ -37,6 +39,19 @@ Base.@kwdef struct PoissonPhenology{I,F} <: PhenologyGenerator
     timespan::I = 100
     mean_length::F = 20
 end
+
+function generate(pp::PP) where {PP<:PoissonPhenology}
+    T, μ = pp.timespan, pp.mean_length
+    timeseries = zeros(Bool, T)
+
+    center = rand(DiscreteUniform(1, T))
+    L = rand(Poisson(μ))
+
+    start, finish = max(1, center - L), min(T, center + L)
+    timeseries[start:finish] .= true
+    Phenology(timeseries)
+end
+
 
 
 

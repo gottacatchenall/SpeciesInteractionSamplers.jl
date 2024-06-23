@@ -1,4 +1,3 @@
-
 struct RelativeAbundanceScaled <: DetectionModel
     relabd::Abundance{RelativeAbundance}
     scaling_param
@@ -21,6 +20,8 @@ function detectability(
     for int in ints
         sᵢ, sⱼ, _ = int
         rᵢ, rⱼ = ra[sᵢ], ra[sⱼ]
+        # NOTE: theres no reason this can't be a joint distribution, w/o independence
+        # assumption. But for now...
         δᵢⱼ = _detection_probability(rᵢ, α) * _detection_probability(rⱼ, α)
         detect_prob_net[sᵢ, sⱼ] = δᵢⱼ
     end

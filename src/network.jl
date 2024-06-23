@@ -86,24 +86,29 @@ function generate(gen::NicheModel)
 end
 
 
-struct StochasticBlockModel
-    node_ids
-    mixing_matrix
-    function StochasticBlockModel(; numspecies=20, numgroups=5)
-        labels = [rand(1:numgroups) for _ in 1:numspecies]
-        mixing = [rand(Beta(0.2, 0.8)) for _ in CartesianIndices((1:numgroups, 1:numgroups))]
-        new(labels, mixing)
+struct StochasticBlockModel{I,F}
+    node_ids::Vector{I}
+    mixing_matrix::Matrix{F}
+    function StochasticBlockModel(node_ids::Vector{I}, mixing_matrix::Matrix{F}) where {I<:Integer,F<:Real}
+        new{I,F}(node_ids, mixing_matrix)
     end
 end
+
+function StochasticBlockModel(; numspecies=SpeciesInteractionSamplers._DEFAULT_SPECIES_RICHNESS, numgroups=3)
+    labels = [rand(1:numgroups) for _ in 1:numspecies]
+    mixing = [rand(Beta(1, 5)) for _ in CartesianIndices((1:numgroups, 1:numgroups))]
+    StochasticBlockModel(labels, mixing)
+end
+
 
 function generate(sbm::StochasticBlockModel)
     y, M = sbm.node_ids, sbm.mixing_matrix
     adj_prob = [M[y[i], y[j]] for i in eachindex(y), j in eachindex(y)]
     adj = map(x -> rand() < x, adj_prob)
     speciespool = SpeciesPool([Symbol("node_$i") for i in 1:size(adj, 1)])
-    net = SpeciesInteractionNetworks.simplify(SpeciesInteractionNetwork(
-        SpeciesInteractionNetworks.Unipartite(speciespool.names),
-        SpeciesInteractionNetworks.Binary(adj),
+    net = simplify(SpeciesInteractionNetwork(
+        Unipartite(speciespool.names),
+        Binary(adj),
     ))
     net = mirror(net)
 
@@ -126,13 +131,8 @@ numspecies(net::N) where {N<:Network} = length(species(net))
 function mirror(mw::SpeciesInteractionNetwork)
     symmetric_adj = (mw.edges.edges .+ mw.edges.edges') .> 0
     symmetric_adj .&= .!Matrix(LinearAlgebra.I, size(symmetric_adj)) # removes diagonal 
-    return SpeciesInteractionNetwork(mw.nodes, SpeciesInteractionNetworks.Binary(symmetric_adj))
+    return SpeciesInteractionNetwork(mw.nodes, Binary(symmetric_adj))
 end
 
 function aggregate(nets)
-    M = nets.networks[1]
-    for n in nets.networks
-        M = M ∪ n
-    end
-    return M
 end

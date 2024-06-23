@@ -3,13 +3,16 @@ struct Range{T<:Number}
 end
 occurrence(r::Range) = r.range_map
 Base.size(r::Range) = size(r.range_map)
-Base.show(io::IO, r::Range) = begin
-    p = UnicodePlots.heatmap(
-        r.range_map,
-        xlabel="x",
-        ylabel="y"
-    )
-    print(io, p)
+Base.show(io::IO, r::R) where {R<:Range} = begin
+    tprint(io, "{green}$R with dimensions $(size(r.range_map)){/green}\n")
+    if _interactive_repl()
+        p = UnicodePlots.heatmap(
+            r.range_map,
+            xlabel="x",
+            ylabel="y"
+        )
+        print(io, p)
+    end
 end
 
 
