@@ -1,3 +1,8 @@
+"""
+    Abundance{A<:AbundanceTrait,S,T}
+
+A distribution of the abundance values of each species in a  [`SpeciesPool`](@ref). 
+"""
 struct Abundance{A<:AbundanceTrait,S,T}
     species::SpeciesPool{S}
     abundance::Vector{T}

@@ -70,6 +70,7 @@ export species, numspecies
 
 include("types.jl")
 include("species.jl")
+include("scale.jl")
 include("network.jl")
 include("abundance.jl")
 include("range.jl")

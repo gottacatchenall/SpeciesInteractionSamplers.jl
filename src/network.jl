@@ -1,33 +1,10 @@
-network(s::Scale) = s.network
-adjacency(s::SpeciesInteractionNetwork) = s.edges.edges
+"""
+    Network{ST<:State,SC<:Scale,SP<:SpeciesPool}
 
-struct Global{SIN<:SpeciesInteractionNetwork} <: Scale
-    network::SIN
-end
-struct Spatial{SIN<:SpeciesInteractionNetwork} <: Scale
-    network::Matrix{Union{SIN,Nothing}}
-end
-Base.size(spat::Spatial) = size(network(spat))
-Base.length(::Spatial) = 1
-Base.eachindex(s::Spatial) = CartesianIndices(network(s))
-Base.getindex(s::Spatial, ci::CartesianIndex) = network(s)[ci]
-Base.getindex(s::Spatial, i::Integer) = network(s)[i]
+A `Network` represents a set of species and their interactions. 
 
-struct Temporal{SIN<:SpeciesInteractionNetwork} <: Scale
-    network::Vector{Union{SIN,Nothing}}
-end
-Base.length(temp::Temporal) = length(network(temp))
-Base.size(::Temporal) = (1, 1)
-Base.eachindex(t::Temporal) = eachindex(network(t))
-Base.getindex(t::Temporal, i::Integer) = network(t)[i]
-
-struct Spatiotemporal{SIN<:SpeciesInteractionNetwork} <: Scale
-    network::Array{Union{SIN,Nothing},3}
-end
-Base.size(st::Spatiotemporal) = size(network(st))[1:2]
-Base.length(st::Spatiotemporal) = size(network(st), 3)
-
-
+A Network is composed of a [`SpeciesPool`](@ref) and a set of interactions defined at a given [`Scale`](@ref).
+"""
 struct Network{ST<:State,SC<:Scale,SP<:SpeciesPool}
     species::SP
     scale::SC
@@ -37,8 +14,16 @@ struct Network{ST<:State,SC<:Scale,SP<:SpeciesPool}
 end
 Base.length(net::Network) = length(scale(net))
 Base.eachindex(net::Network) = Base.eachindex(scale(net))
-_format_string(net::Network{ST,SC}) where {ST,SC} = "{blue}$ST{/blue} {green}$SC{/green} {yellow}{bold}Network{/bold}{/yellow}"
+_format_string(::Network{ST,SC}) where {ST,SC} = "{blue}$ST{/blue} {green}$SC{/green} {yellow}{bold}Network{/bold}{/yellow}"
 Base.getindex(net::Network, x) = getindex(scale(net), x)
+
+Base.size(net::Network) = size(network(net))
+
+scale(net::Network) = net.scale
+network(net::Network) = network(scale(net))
+richness(net::N) where {N<:Network} = length(species(net))
+species(net::N) where {N<:Network} = net.species
+numspecies(net::N) where {N<:Network} = length(species(net))
 
 
 Base.show(io::IO, net::Network{ST,G}) where {ST,G<:Global} = begin
@@ -72,11 +57,22 @@ end
 # Generators
 #
 # ===============================================================
-@kwdef struct NicheModel{I<:Integer,F<:Real}
+
+"""
+    NicheModel
+
+A [`NetworkGenerator`](@ref) that generates a food-web for a fixed number of `species` and an expected value of `connectance` (the proportion of possible edges that are feasible in the network). Proposed in @Williams2000SimRul.
+"""
+@kwdef struct NicheModel{I<:Integer,F<:Real} <: NetworkGenerator
     species::I = 30
     connectance::F = 0.1
 end
 
+"""
+    generate(gen::NicheModel)
+
+Generates a [`Feasible`](@ref) [`Network`](@ref) using the niche model for food-web generation from Williams-Martinez (2000).
+"""
 function generate(gen::NicheModel)
     S, C = gen.species, gen.connectance
     net = SpeciesInteractionNetworks.structuralmodel(SpeciesInteractionNetworks.NicheModel, S, C)
@@ -85,8 +81,12 @@ function generate(gen::NicheModel)
     Network{Feasible}(sp, Global(net))
 end
 
+"""
+    StochasticBlockModel <: NetworkGenerator
 
-struct StochasticBlockModel{I,F}
+A [`NetworkGenerator`](@ref) that generates a network based on assigning each node a group `node_ids`, and a matrix `mixing_matrix` which at each index `mixing_matrix[i,j]` describes the probability that an edge exists between a node in group `i` and a node in group `j`. 
+"""
+struct StochasticBlockModel{I,F} <: NetworkGenerator
     node_ids::Vector{I}
     mixing_matrix::Matrix{F}
     function StochasticBlockModel(node_ids::Vector{I}, mixing_matrix::Matrix{F}) where {I<:Integer,F<:Real}
@@ -94,13 +94,22 @@ struct StochasticBlockModel{I,F}
     end
 end
 
-function StochasticBlockModel(; numspecies=SpeciesInteractionSamplers._DEFAULT_SPECIES_RICHNESS, numgroups=3)
+"""
+    StochasticBlockModel(; numspecies=SpeciesInteractionSamplers._DEFAULT_SPECIES_RICHNESS, numgroups=3)
+
+Constructor for a [`StochasticBlockModel`](@ref) based on a set number of species and number of groups, where the mixing probabilities between groups `i` and `j` are drawn from `mixing_dist`
+"""
+function StochasticBlockModel(; numspecies=SpeciesInteractionSamplers._DEFAULT_SPECIES_RICHNESS, numgroups=3, mixing_dist=Beta(1, 5))
     labels = [rand(1:numgroups) for _ in 1:numspecies]
-    mixing = [rand(Beta(1, 5)) for _ in CartesianIndices((1:numgroups, 1:numgroups))]
+    mixing = [rand(mixing_dist) for _ in CartesianIndices((1:numgroups, 1:numgroups))]
     StochasticBlockModel(labels, mixing)
 end
 
+"""
+    generate(sbm::StochasticBlockModel)
 
+Method for generating a [`Feasible`](@ref) [`Network`](@ref) using a [`StochasticBlockModel`](@ref) generator.
+"""
 function generate(sbm::StochasticBlockModel)
     y, M = sbm.node_ids, sbm.mixing_matrix
     adj_prob = [M[y[i], y[j]] for i in eachindex(y), j in eachindex(y)]
@@ -120,14 +129,6 @@ end
 # Helper methods
 #
 # ===============================================================
-scale(net::Network) = net.scale
-network(net::Network) = network(scale(net))
-Base.size(net::Network) = size(network(net))
-
-richness(net::N) where {N<:Network} = length(species(net))
-species(net::N) where {N<:Network} = net.species
-numspecies(net::N) where {N<:Network} = length(species(net))
-
 function mirror(mw::SpeciesInteractionNetwork)
     symmetric_adj = (mw.edges.edges .+ mw.edges.edges') .> 0
     symmetric_adj .&= .!Matrix(LinearAlgebra.I, size(symmetric_adj)) # removes diagonal 

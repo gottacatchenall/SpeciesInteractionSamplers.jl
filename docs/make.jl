@@ -10,10 +10,13 @@ makedocs(;
     format=DocumenterVitepress.MarkdownVitepress(
         repo="https://github.com/gottacatchenall/SpeciesInteractionSamplers.jl",
         devurl="dev",
-        #deploy_url="gottacatchenall.github.io/SpeciesInteractionSamplers.jl",
     ),
     pages=[
         "Home" => "index.md",
+        "Reference" => [
+            joinpath("reference", "internal.md"),
+            joinpath("reference", "public.md")
+        ]
     ],
     warnonly=true,
 )

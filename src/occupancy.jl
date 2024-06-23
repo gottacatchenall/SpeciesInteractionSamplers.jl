@@ -1,5 +1,5 @@
 struct Occurrence{T<:Union{Range,Phenology}}
-    species::Vector{Symbol}
+    species::Vector{Symbol} # TODO: make this a speciespool
     occurrence::Vector{T}
 end
 Base.eachindex(occ::Occurrence{<:Phenology}) = eachindex(occurrence(occ)[begin])
