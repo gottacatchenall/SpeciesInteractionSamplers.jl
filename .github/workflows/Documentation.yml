@@ -21,7 +21,7 @@ jobs:
         run: julia --project=. -e 'using Pkg; Pkg.add(url="https://github.com/PoisotLab/SpeciesInteractionNetworks.jl")'
       - uses: julia-actions/julia-buildpkg@latest
       - name: Install documentation dependencies
-        run: julia --project=docs -e 'using Pkg; pkg"dev ."; Pkg.add(url="https://github.com/PoisotLab/SpeciesInteractionNetworks.jl"); Pkg.instantiate(); Pkg.precompile(); Pkg.status()'
+        run: julia --project=docs -e 'using Pkg; Pkg.add(url="https://github.com/PoisotLab/SpeciesInteractionNetworks.jl"); pkg"dev .";  Pkg.instantiate(); Pkg.precompile(); Pkg.status()'
       #- name: Creating new mds from src
       - name: Build and deploy docs
         uses: julia-actions/julia-docdeploy@v1
