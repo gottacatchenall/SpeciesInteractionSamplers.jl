@@ -1,28 +1,22 @@
-function possible(::Network{ST,SC}, args...) where {ST,SC}
-    tprint("{red}Possible must be called on a {bold}Feasible{/bold} network{/red}\n")
+function possible(args...)
+    tprint("{red}{bold}ERROR:{/bold} The arguments to `possible` must be a `Feasible` network, and optionally `Occurrence` {red}data for each species.{/red}\n")
     throw(ArgumentError)
 end
 
-function possible(net::Network{Feasible,G}, occ::Occurrence{T}) where {G<:Global,T<:Union{Range,Phenology}}
-    #nets = [Base.copy(network(net)) for _ in eachindex(occ)]
+function _local_net(idx, net, occ)
+    pres = present(occ, idx)
+    localnet = subgraph(network(net), pres)
 
-    # TODO refactor so all empty networks a dropped and replaced in the nets datastructure 
-    function _get_local_net(idx)
-        pres = present(occ, idx)
-        localnet = Base.copy(network(net))
-        localnet = SpeciesInteractionNetworks.subgraph(localnet, pres)
-
-        if length(SpeciesInteractionNetworks.interactions(localnet)) > 0
-            return localnet
-        end
-        return nothing
+    if length(interactions(localnet)) > 0
+        return localnet
     end
-    nets = Union{SpeciesInteractionNetworks.SpeciesInteractionNetwork,Nothing}[_get_local_net(x) for x in eachindex(occ)]
-
-    SC = T <: Range ? Spatial : Temporal
-    Network{Possible}(species(net), SC(nets))
+    return nothing
 end
 
+function possible(net::Network{Feasible,G}, occ::Occurrence{T}) where {G<:Global,T<:Union{Range,Phenology}}
+    _scale = map(x -> _local_net(x, net, occ), occ)
+    Network{Possible}(species(net), _scale)
+end
 
 possible(
     net::Network{Feasible,G},
@@ -30,41 +24,37 @@ possible(
     ranges::Occurrence{R}
 ) where {G,R<:Range,P<:Phenology} = possible(net, ranges, phenologies)
 
+function _spatiotemporal_local_net(x, t, adj, spnames, spat_pres, temp_pres)
+    cooc_onehot = vec(spat_pres[x] .& temp_pres[t])
+    if sum(cooc_onehot) > 0
+        cooc_idx = findall(cooc_onehot)
+        return SpeciesInteractionNetwork(
+            Unipartite(spnames[cooc_idx]),
+            Binary(adj[cooc_idx, cooc_idx])
+        )
+    end
+    return nothing
+end
+
 function possible(
     net::Network{Feasible,G},
     ranges::Occurrence{R},
     phenologies::Occurrence{P}
 ) where {G<:Global,R<:Range,P<:Phenology}
-    spnames = species(net).names
+    onehot(localspecies) = Bool.(sum(permutedims(localspecies) .== spnames, dims=2))
 
     adj = net.scale.network.edges.edges
-
-    onehot(localspecies) = Bool.(sum(permutedims(localspecies) .== spnames, dims=2))
-    findidx(sp) = findfirst(isequal(sp), spnames)
+    spnames = species(net).names
 
     spat_pres = [onehot(present(ranges, x)) for x in eachindex(ranges)]
     temp_pres = [onehot(present(phenologies, t)) for t in eachindex(phenologies)]
 
-
-    function local_net(x, t)
-        cooc_onehot = vec(spat_pres[x] .& temp_pres[t])
-
-        if sum(cooc_onehot) > 0
-
-            cooc_idx = findall(cooc_onehot)
-            return SpeciesInteractionNetwork(
-                SpeciesInteractionNetworks.Unipartite(spnames[cooc_idx]),
-                SpeciesInteractionNetworks.Binary(adj[cooc_idx, cooc_idx])
-            )
-        end
-        return nothing
-    end
-
-    ST = Spatiotemporal(Union{SpeciesInteractionNetworks.SpeciesInteractionNetwork,Nothing}[local_net(x, t) for x in eachindex(ranges), t in eachindex(phenologies)])
+    _func = (x, t) -> _spatiotemporal_local_net(x, t, adj, spnames, spat_pres, temp_pres)
+    st = map(_func, ranges, phenologies)
 
     Network{Possible}(
         species(net),
-        ST
+        st
     )
 end
 
