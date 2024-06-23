@@ -18,10 +18,10 @@ jobs:
         with:
           version: '1.9'
       - name: Install SINs.jl
-        run: julia --project=. -e 'using Pkg; Pkg.add(url="https://github.com/PoisotLab/SpeciesInteractionNetworks.jl"); Pkg.instantiate()'
+        run: julia --project=. -e 'using Pkg; Pkg.add(url="https://github.com/PoisotLab/SpeciesInteractionNetworks.jl")'
       - uses: julia-actions/julia-buildpkg@latest
       - name: Install dependencies
-        run: julia --project=docs/ -e 'using Pkg; Pkg.add(url="https://github.com/PoisotLab/SpeciesInteractionNetworks.jl"); Pkg.instantiate()'
+        run: julia --project=docs/ -e 'using Pkg; Pkg.add(url="https://github.com/PoisotLab/SpeciesInteractionNetworks.jl");  Pkg.instantiate()'
       - name: Build and deploy
         env:
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
