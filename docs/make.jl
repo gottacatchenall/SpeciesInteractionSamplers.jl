@@ -1,26 +1,26 @@
-push!(LOAD_PATH, "../src/")
+using Documenter, DocumenterVitepress
 
-using Documenter
-using DocumenterCitations
-using DocumenterMarkdown
+push!(LOAD_PATH, "../src/")
 using SpeciesInteractionSamplers
 
-bibliography = CitationBibliography(joinpath(@__DIR__, "SIS.bib"))
-
-makedocs(
-    bibliography;
-    sitename="SpeciesInteractionSamplers.jl",
-    authors="Michael D. Catchen",
+makedocs(;
     modules=[SpeciesInteractionSamplers],
-    format=Markdown(),)
-
+    authors="Michael D. Catchen",
+    repo="https://github.com/gottacatchenall/SpeciesInteractionSamplers.jl",
+    sitename="SpeciesInteractionSamplers.jl",
+    format=DocumenterVitepress.MarkdownVitepress(
+        repo="https://github.com/gottacatchenall/SpeciesInteractionSamplers.jl",
+        devurl="dev",
+        deploy_url="gottacatchenall.github.io/SpeciesInteractionSamplers.jl",
+    ),
+    pages=[
+        "Home" => "index.md",
+    ],
+    warnonly=true,
+)
 
 deploydocs(;
-    deps=Deps.pip("mkdocs", "pygments", "python-markdown-math", "mkdocs-material"),
-    repo="github.com/gottacatchenall/SpeciesInteractionSamplers.jl.git",
-    devbranch="main",
-    make=() -> run(`mkdocs build`),
-    target="site",
+    repo="github.com/gottacatchenall/SpeciesInteractionSamplers.jl",
     push_preview=true,
 )
 
