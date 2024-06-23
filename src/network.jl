@@ -12,20 +12,51 @@ struct Network{ST<:State,SC<:Scale,SP<:SpeciesPool}
         new{ST,typeof(net),typeof(sp)}(sp, net)
     end
 end
+
 Base.length(net::Network) = length(scale(net))
 Base.eachindex(net::Network) = Base.eachindex(scale(net))
-_format_string(::Network{ST,SC}) where {ST,SC} = "{blue}$ST{/blue} {green}$SC{/green} {yellow}{bold}Network{/bold}{/yellow}"
 Base.getindex(net::Network, x) = getindex(scale(net), x)
-
 Base.size(net::Network) = size(network(net))
 
+
+"""
+    scale(net::Network)
+
+Returns the network partitioned at the [`Scale`](@ref) it is defined at.
+"""
 scale(net::Network) = net.scale
+
+"""
+    network(net::Network)
+
+One of the most confusing function calls I've ever written. 
+"""
+# TODO: Fix the internal scale type and associated getter to be more clear
 network(net::Network) = network(scale(net))
+
+"""
+    richness(net::N) where {N<:Network}
+
+Returns the number of species in the [`SpeciesPool`](@ref) associated with the input [`Network`](@ref) `net`. 
+"""
 richness(net::N) where {N<:Network} = length(species(net))
+
+"""
+    species(net::N) where {N<:Network}
+
+Returns the [`SpeciesPool`](@ref) that belongs to the input [`Network`](@ref) `net`.
+"""
 species(net::N) where {N<:Network} = net.species
+
+"""
+    numspecies(net::N) where {N<:Network}
+
+Returns the number of species in a [`Network`](@ref) `net`. 
+"""
 numspecies(net::N) where {N<:Network} = length(species(net))
 
 
+_format_string(::Network{ST,SC}) where {ST,SC} = "{blue}$ST{/blue} {green}$SC{/green} {yellow}{bold}Network{/bold}{/yellow}"
 Base.show(io::IO, net::Network{ST,G}) where {ST,G<:Global} = begin
     tprint(
         io,
@@ -129,6 +160,13 @@ end
 # Helper methods
 #
 # ===============================================================
+
+
+"""
+    mirror(mw::SpeciesInteractionNetwork)
+
+Returns a symmetric (i.e. undirected) version of the input `SpeciesInteractionNetwork` (yes, the type from `SpeciesInteractionNetworks`, not our `Network` type ) with no self loops (i.e. diagonal of the adjacency matrix is 0)
+"""
 function mirror(mw::SpeciesInteractionNetwork)
     symmetric_adj = (mw.edges.edges .+ mw.edges.edges') .> 0
     symmetric_adj .&= .!Matrix(LinearAlgebra.I, size(symmetric_adj)) # removes diagonal 

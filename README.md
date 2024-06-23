@@ -152,7 +152,7 @@ Creates network with realization rates between species governed by some `Realiza
     phens = generate(UniformPhenology(), 30)
     poss_nets = possible(metaweb, phens)    
 
-    realization_model = NeutrallyForbiddenLinks(relabd)
+    realization_model = NeutrallyForbiddenLinks(relabd, _ENERGY)
     realizable(poss_nets, realization_model)
     ```
     </details>
@@ -171,7 +171,7 @@ Creates network with realization rates between species governed by some `Realiza
     ranges = generate(AutocorrelatedRange(), 30)
     poss_nets = possible(metaweb, ranges)    
 
-    realization_model = NeutrallyForbiddenLinks(relabd)
+    realization_model = NeutrallyForbiddenLinks(relabd, _ENERGY)
     realizable(poss_nets, realization_model)
     ```
     </details>
@@ -190,7 +190,7 @@ Creates network with realization rates between species governed by some `Realiza
     phens = generate(UniformPhenology(), 30)
     poss_nets = possible(metaweb, ranges, phens)    
 
-    realization_model = NeutrallyForbiddenLinks(relabd)
+    realization_model = NeutrallyForbiddenLinks(relabd, _ENERGY)
     realizable(poss_nets, realization_model)
     ```
     </details>
@@ -209,7 +209,7 @@ Creates network with realization rates between species governed by some `Realiza
     ranges = generate(AutocorrelatedRange(), 30)
     poss_nets = possible(metaweb, ranges)    
 
-    realization_model = NeutrallyForbiddenLinks(relabd)
+    realization_model = NeutrallyForbiddenLinks(relabd, _ENERGY)
     rlzble = realizable(poss_nets, realization_model)
     realize(rlzble)
     ```
@@ -227,7 +227,7 @@ Creates network with realization rates between species governed by some `Realiza
     phens = generate(UniformPhenology(), 30)
     poss_nets = possible(metaweb, phens)    
 
-    realization_model = NeutrallyForbiddenLinks(relabd)
+    realization_model = NeutrallyForbiddenLinks(relabd, _ENERGY)
     rlzble = realizable(poss_nets, realization_model)
     realize(rlzble)
     ```
@@ -245,7 +245,7 @@ Creates network with realization rates between species governed by some `Realiza
     phens = generate(UniformPhenology(), 30)
     poss_nets = possible(metaweb, ranges, phens)    
 
-    realization_model = NeutrallyForbiddenLinks(relabd)
+    realization_model = NeutrallyForbiddenLinks(relabd, _ENERGY)
     rlzble = realizable(poss_nets, realization_model)
     realize(rlzble)
     ```
@@ -283,7 +283,7 @@ Creates network with realization rates between species governed by some `Realiza
     ranges = generate(AutocorrelatedRange(), 30)
     poss_nets = possible(metaweb, ranges)    
 
-    realization_model = NeutrallyForbiddenLinks(relabd)
+    realization_model = NeutrallyForbiddenLinks(relabd, _ENERGY)
     rlzble = realizable(poss_nets, realization_model)
     realized_net = realize(rlzble)
 
@@ -307,7 +307,7 @@ Creates network with realization rates between species governed by some `Realiza
     phens = generate(UniformPhenology(), 30)
     poss_nets = possible(metaweb, phens)    
 
-    realization_model = NeutrallyForbiddenLinks(relabd)
+    realization_model = NeutrallyForbiddenLinks(relabd, _ENERGY)
     rlzble = realizable(poss_nets, realization_model)
     realized_net = realize(rlzble)
 
@@ -331,7 +331,7 @@ Creates network with realization rates between species governed by some `Realiza
     phens = generate(UniformPhenology(), 30)
     poss_nets = possible(metaweb, ranges, phens)    
 
-    realization_model = NeutrallyForbiddenLinks(relabd)
+    realization_model = NeutrallyForbiddenLinks(relabd, _ENERGY)
     rlzble = realizable(poss_nets, realization_model)
     realized_net = realize(rlzble)
 

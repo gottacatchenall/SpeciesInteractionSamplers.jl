@@ -45,6 +45,7 @@ export NeutrallyForbiddenLinks
 export DetectionModel
 export RelativeAbundanceScaled
 
+export Abundance
 export AbundanceTrait
 export RelativeAbundance, Density, Count
 

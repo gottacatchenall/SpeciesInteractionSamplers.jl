@@ -1,3 +1,10 @@
+"""
+    struct RelativeAbundanceScaled <: DetectionModel
+
+Model for generation detection probability where the probability of detecting an interaction between species `i` and species `j` is 
+a product of the detection probabilities for each species, treated as independent of one-another. 
+
+"""
 struct RelativeAbundanceScaled <: DetectionModel
     relabd::Abundance{RelativeAbundance}
     scaling_param
@@ -7,8 +14,8 @@ _detection_probability(species_ra, α) = 1 - (1 - species_ra)^α
 
 function detectability(
     net::Network{Feasible,<:Global},
-    detection_model::DM
-) where {DM<:DetectionModel}
+    detection_model::RelativeAbundanceScaled
+)
 
     ra = detection_model.relabd
     α = detection_model.scaling_param

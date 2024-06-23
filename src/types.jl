@@ -86,12 +86,40 @@ Possible subtypes are:
 """
 abstract type Scale end
 
+"""
+    abstract type AbundanceTrait end 
+
+Supertype for the different forms of ways species abundance can be represented, i.e.
+
+- [`RelativeAbundance`](@ref)
+- [`Density`](@ref)
+- [`Count`](@ref)
+"""
+
 abstract type AbundanceTrait end
+
+"""
+    RelativeAbundance
+
+Reprsents species abundances as a vector `x` where each element represents the proportional species abundance. Note that `sum(x)` must equal `1`.
+"""
 abstract type RelativeAbundance <: AbundanceTrait end
+
 abstract type Density <: AbundanceTrait end
 abstract type Count <: AbundanceTrait end
 
 
+"""
+    RealizationModel
+
+Supertype for all models that describe how a [`Network`](@ref) goes from [`Possible`](@ref) to [`Realizable`](@ref)
+"""
 abstract type RealizationModel end
+
+"""
+    DetectionModel
+
+Supertype for all models that describe how likely each [`Feasible`](@ref) interaction is to be detected in the presence of an observer. 
+"""
 abstract type DetectionModel end
 

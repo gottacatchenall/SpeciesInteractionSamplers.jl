@@ -1,12 +1,17 @@
 """
     Base.map(fcn, net::Network{ST,<:Global}) where {ST}
 
-Overload of the `map` method for `Global` networks.
+Applies the function `fcn` to the [`Global`](@ref) [`Network`](@ref) `net`. Overload of the `map` method for `Global` networks.
 """
 function Base.map(fcn, net::Network{ST,<:Global}) where {ST}
     Global(fcn(network(net)))
 end
 
+"""
+    Base.map(fcn, net::Network{ST,SC}) where {ST,SC}
+
+foo
+"""
 function Base.map(fcn, net::Network{ST,SC}) where {ST,SC}
     _sc = SC.name.wrapper
     _sc(Union{SpeciesInteractionNetwork,Nothing}[fcn(localnet) for localnet in network(net)])
