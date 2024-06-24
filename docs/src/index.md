@@ -2,11 +2,13 @@
 
 Documentation for `SpeciesInteractionSamplers.jl`.
 
+![](./concept.png)
+
 ```@setup 1
 using SpeciesInteractionSamplers
 ```
 
-```@repl 1
+```@example 1
 energy = 200
 λ = generate(NicheModel())
 relabd = generate(NormalizedLogNormal(σ=0.2), λ)
