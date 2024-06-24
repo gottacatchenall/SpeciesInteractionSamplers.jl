@@ -12,6 +12,21 @@ end
 
 _detection_probability(species_ra, α) = 1 - (1 - species_ra)^α
 
+Base.show(io::IO, ras::RelativeAbundanceScaled) = begin
+    X = 0.0:0.01:1
+    Y = map(x->_detection_probability(x, ras.scaling_param), X)
+
+    p = lineplot(log.(X), Y,
+            xlabel = "log(Relative Abundance)",
+            ylabel = "Detection Probability",
+        )
+
+    pts = map(x->_detection_probability(x, ras.scaling_param), ras.relabd.abundance)
+    scatterplot!(p, log.(ras.relabd.abundance), pts, marker=:xcross, color=:blue)
+    print(io, p)
+end
+
+
 """
     detectability(net::Network{Feasible,<:Global}, detection_model)
 

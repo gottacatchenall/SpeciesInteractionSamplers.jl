@@ -17,7 +17,7 @@ function _rate_matrix(localnet, relabd, energy)
             rate_network[spᵢ, spⱼ] = θᵢⱼ
             ra_sum += θᵢⱼ
         end
-        return (energy .* rate_network) ./ ra_sum
+        return energy .* (rate_network ./ ra_sum)
     end
 end
 
