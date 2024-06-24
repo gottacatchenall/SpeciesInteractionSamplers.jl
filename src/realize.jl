@@ -18,5 +18,6 @@ function realize(net::Network{Realizable,SC}) where {SC}
     Network{Realized}(
         net.species,
         _scale,
+        net.metaweb
     )
 end

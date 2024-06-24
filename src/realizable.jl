@@ -31,5 +31,6 @@ function realizable(
     Network{Realizable}(
         net.species,
         _scale,
+        net.metaweb
     )
 end

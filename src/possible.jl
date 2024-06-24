@@ -27,7 +27,7 @@ end
 
 function possible(net::Network{Feasible,G}, occ::Occurrence{T}) where {G<:Global,T<:Union{Range,Phenology}}
     _scale = map(x -> _local_net(x, net, occ), occ)
-    Network{Possible}(species(net), _scale)
+    Network{Possible}(species(net), _scale, net.metaweb)
 end
 
 possible(
@@ -53,7 +53,7 @@ function possible(
     _func = (x, t) -> _spatiotemporal_local_net(x, t, adj, spnames, spat_pres, temp_pres)
     st = map(_func, ranges, phenologies)
 
-    Network{Possible}(sppool, st)
+    Network{Possible}(sppool, st, net.metaweb)
 end
 
 

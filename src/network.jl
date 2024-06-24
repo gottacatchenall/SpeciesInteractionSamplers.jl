@@ -5,11 +5,12 @@ A `Network` represents a set of species and their interactions.
 
 A Network is composed of a [`SpeciesPool`](@ref) and a set of interactions defined at a given [`Scale`](@ref).
 """
-struct Network{ST<:State,SC<:Scale,SP<:SpeciesPool}
+struct Network{ST<:State,SC<:Scale,SP<:SpeciesPool,SIN<:SpeciesInteractionNetwork}
     species::SP
     scale::SC
-    function Network{ST}(sp, net) where {ST}
-        new{ST,typeof(net),typeof(sp)}(sp, net)
+    metaweb::SIN
+    function Network{ST}(sp, net, metaweb) where {ST}
+        new{ST,typeof(net),typeof(sp),typeof(metaweb)}(sp, net, metaweb)
     end
 end
 
@@ -31,7 +32,8 @@ scale(net::Network) = net.scale
 
 Returns the adjacency network(s) associated with a Network `net`.
 """
-adjacency(net::Network) = adjacency(scale(net))
+adjacency(net::Network{ST,<:Global}) where {ST} = Matrix(adjacency(scale(net)))
+adjacency(net::Network{ST,SC}) where {ST,SC} = Matrix.(adjacency(scale(net)))
 
 """
     network(net::Network)
@@ -63,11 +65,11 @@ Returns the number of species in a [`Network`](@ref) `net`.
 numspecies(net::N) where {N<:Network} = richness(net)
 
 # Add backslash before each square bracket
-_add_escapes(str) = ""
+_add_escapes(str) = replace(str, Char(0x1B) => "\\e")
 
 _format_string(::Network{ST,SC}) where {ST,SC} = "{blue}$ST{/blue} {green}$SC{/green} {yellow}{bold}Network{/bold}{/yellow}"
 Base.show(io::IO, net::Network{ST,G}) where {ST,G<:Global} = begin
-  if _interactive_repl()
+    if _interactive_repl()
         tprint(
             io,
             Panel(_format_string(net))
@@ -80,20 +82,27 @@ Base.show(io::IO, net::Network{ST,G}) where {ST,G<:Global} = begin
         )
         print(io, f)
     else
-        print(io, Term.Style.apply_style(_format_string(net)))
+        printstyled(io, "$ST Global Network", color=:blue)
     end
-    
+
 end
 
-Base.show(io::IO, net::Network{ST,SP}) where {ST,SP} = begin
-    str = _format_string(net)
-    details = """
-                - $(richness(net)) species 
-                - $(size(scale(net))) spatial resolution
-                - $(length(net)) timesteps
-              """
-    tprint(io, Panel(str, details))
 
+Base.show(io::IO, net::Network{ST,SP}) where {ST,SP} = begin
+    unique_ints, sz = sum(adjacency(net.metaweb)), size(scale(net))
+    details = """
+        - $unique_ints unique interactions, $(richness(net)) species  (density = $(unique_ints/(prod(sz))))
+        - $sz spatial resolution
+        - $(length(net)) timesteps
+    """
+
+    if _interactive_repl()
+        str = _format_string(net)
+        tprint(io, Panel(str, details))
+    else
+        println(io, "$ST $SP Network")
+        print(io, details)
+    end
 end
 
 # ==============================================================
@@ -122,7 +131,7 @@ function generate(gen::NicheModel)
     net = SpeciesInteractionNetworks.structuralmodel(SpeciesInteractionNetworks.NicheModel, S, C)
     net = mirror(net)
     sp = SpeciesPool(SpeciesInteractionNetworks.species(net))
-    Network{Feasible}(sp, Global(net))
+    Network{Feasible}(sp, Global(net), net)
 end
 
 """
@@ -165,7 +174,7 @@ function generate(sbm::StochasticBlockModel)
     ))
     net = mirror(net)
 
-    Network{Feasible}(speciespool, Global(net))
+    Network{Feasible}(speciespool, Global(net), net)
 end
 
 # ===============================================================
@@ -186,5 +195,3 @@ function mirror(mw::SpeciesInteractionNetwork)
     return SpeciesInteractionNetwork(mw.nodes, Binary(symmetric_adj))
 end
 
-function aggregate(nets)
-end

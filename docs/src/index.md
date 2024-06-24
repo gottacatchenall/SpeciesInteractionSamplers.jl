@@ -4,6 +4,8 @@ Documentation for `SpeciesInteractionSamplers.jl`.
 
 ![](./concept.png)
 
+![](./design.png)
+
 ```@setup 1
 using SpeciesInteractionSamplers
 ```
