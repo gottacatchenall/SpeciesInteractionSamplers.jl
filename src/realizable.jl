@@ -23,11 +23,10 @@ end
 
 
 function realizable(
-    net::Network{ST,SC},
+    net::N,
     rm::NeutrallyForbiddenLinks
-) where {ST<:Union{Feasible,Possible},SC}
+) where {N<:Union{Network{<:Feasible},Network{<:Possible}}}
     relabd, energy = rm.relative_abundance, rm.energy
-
     _scale = map(x -> _rate_matrix(x, relabd, energy), net)
     Network{Realizable}(
         net.species,

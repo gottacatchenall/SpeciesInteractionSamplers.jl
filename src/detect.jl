@@ -50,7 +50,6 @@ function detect(
     detection_prob::Network{Detectable,<:Global}
 ) where {SC}
 
-
     function _detect(localnet)
         if !isnothing(localnet)
             detect_counts = SpeciesInteractionNetworks.Quantitative(zeros(Int, size(localnet)))
@@ -64,7 +63,6 @@ function detect(
         end
     end
 
-    _sc = SC.name.wrapper
-    localnets = network(net)
-    Network{Detected}(net.species, _sc([_detect(localnet) for localnet in localnets]))
+    _scale = map(_detect, net)
+    Network{Detected}(net.species, _scale)
 end

@@ -11,6 +11,7 @@ struct Global{SIN<:SpeciesInteractionNetwork} <: Scale
     network::SIN
 end
 adjacency(s::Global) = adjacency(network(s))
+Base.length(::Global) = 1
 
 """
     Spatial{SIN<:SpeciesInteractionNetwork} <: Scale

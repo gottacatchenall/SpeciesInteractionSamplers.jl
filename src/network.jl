@@ -62,21 +62,27 @@ Returns the number of species in a [`Network`](@ref) `net`.
 """
 numspecies(net::N) where {N<:Network} = richness(net)
 
+# Add backslash before each square bracket
+_add_escapes(str) = ""
 
 _format_string(::Network{ST,SC}) where {ST,SC} = "{blue}$ST{/blue} {green}$SC{/green} {yellow}{bold}Network{/bold}{/yellow}"
 Base.show(io::IO, net::Network{ST,G}) where {ST,G<:Global} = begin
-    tprint(
-        io,
-        Panel(_format_string(net))
-    )
-    if _interactive_repl()
+  if _interactive_repl()
+        tprint(
+            io,
+            Panel(_format_string(net))
+        )
+
         f = UnicodePlots.heatmap(
             adjacency(network(net)),
             xlabel="Species",
             ylabel="Species"
         )
         print(io, f)
+    else
+        print(io, Term.Style.apply_style(_format_string(net)))
     end
+    
 end
 
 Base.show(io::IO, net::Network{ST,SP}) where {ST,SP} = begin

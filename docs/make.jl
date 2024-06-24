@@ -2,10 +2,12 @@ using Documenter, DocumenterVitepress
 
 using SpeciesInteractionSamplers
 
+SpeciesInteractionSamplers.INTERACTIVE_REPL = false
+
 makedocs(;
     modules=[SpeciesInteractionSamplers],
     authors="Michael D. Catchen",
-    repo="https://github.com/gottacatchenall/SpeciesInteractionSamplers.jl",
+    repo="https://github.com/gottacatchenall/SpeciesInteractionSamplers.jl/blob/{commit}{path}#{line}",
     sitename="SpeciesInteractionSamplers.jl",
     format=DocumenterVitepress.MarkdownVitepress(
         repo="https://github.com/gottacatchenall/SpeciesInteractionSamplers.jl",

@@ -1,7 +1,7 @@
 module SpeciesInteractionSamplers
 
-INTERACTION_REPL = true
-_interactive_repl() = INTERACTION_REPL
+INTERACTIVE_REPL = true
+_interactive_repl() = INTERACTIVE_REPL
 
 _DEFAULT_SPECIES_RICHNESS = 30
 _DEFAULT_NUM_TIMESTEPS = 100
@@ -77,6 +77,7 @@ include("range.jl")
 include("phenology.jl")
 include("occupancy.jl")
 
+include("map.jl")
 include("possible.jl")
 include("realizable.jl")
 include("realize.jl")
