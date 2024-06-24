@@ -14,7 +14,7 @@ makedocs(;
     pages=[
         "Home" => "index.md",
         "Reference" => [
-            joinpath("reference", "internal.md"),
+            #joinpath("reference", "internal.md"),
             joinpath("reference", "public.md")
         ]
     ],

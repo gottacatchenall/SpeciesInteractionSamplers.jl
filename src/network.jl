@@ -14,7 +14,7 @@ struct Network{ST<:State,SC<:Scale,SP<:SpeciesPool}
 end
 
 Base.length(net::Network) = length(scale(net))
-Base.eachindex(net::Network) = Base.eachindex(scale(net))
+Base.eachindex(net::Network) = eachindex(scale(net))
 Base.getindex(net::Network, x) = getindex(scale(net), x)
 Base.size(net::Network) = size(network(net))
 
@@ -25,6 +25,13 @@ Base.size(net::Network) = size(network(net))
 Returns the network partitioned at the [`Scale`](@ref) it is defined at.
 """
 scale(net::Network) = net.scale
+
+"""
+    adjacency(net::Network)
+
+Returns the adjacency network(s) associated with a Network `net`.
+"""
+adjacency(net::Network) = adjacency(scale(net))
 
 """
     network(net::Network)
@@ -53,7 +60,7 @@ species(net::N) where {N<:Network} = net.species
 
 Returns the number of species in a [`Network`](@ref) `net`. 
 """
-numspecies(net::N) where {N<:Network} = length(species(net))
+numspecies(net::N) where {N<:Network} = richness(net)
 
 
 _format_string(::Network{ST,SC}) where {ST,SC} = "{blue}$ST{/blue} {green}$SC{/green} {yellow}{bold}Network{/bold}{/yellow}"

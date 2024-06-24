@@ -1,6 +1,6 @@
 struct NeutrallyForbiddenLinks <: RealizationModel
     relative_abundance::Abundance{RelativeAbundance}
-    energy
+    energy # TODO: refactor so energy is a scalar/tensor that matches the scale of the network `realizable` is called on 
 end
 struct Equal <: RealizationModel end
 

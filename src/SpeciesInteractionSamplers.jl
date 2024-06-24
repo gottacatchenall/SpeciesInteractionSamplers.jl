@@ -43,11 +43,6 @@ export NeutrallyForbiddenLinks
 
 export DetectionModel
 export RelativeAbundanceScaled
-
-export AbundanceTrait
-export RelativeAbundance, Density, Count
-
-
 export State
 export Feasible, Possible, Realizable, Realized, Detectable, Detected
 
@@ -62,13 +57,19 @@ export Occurrence
 
 export occurrence
 
+export Abundance
+export AbundanceTrait
+export RelativeAbundance, Density, Count
+
 #export Binary, Probability
 
 # Network utils
 export mirror, aggregate
-export species, numspecies
+export scale
+export species, richness, adjacency, numspecies
 
 include("types.jl")
+include("scale.jl")
 include("species.jl")
 include("network.jl")
 include("abundance.jl")
@@ -80,24 +81,5 @@ include("possible.jl")
 include("realizable.jl")
 include("realize.jl")
 include("detect.jl")
-
-#= 
-include(joinpath("networks", "metaweb.jl"))
-include(joinpath("abundance", "relativeabundance.jl"))
-include(joinpath("phenologies", "phenology.jl"))
-include(joinpath("ranges", "range.jl"))
-include(joinpath("ranges", "mosaic.jl"))
-
-include(joinpath("networks", "utils.jl"))
-include(joinpath("networks", "spatial.jl"))
-include(joinpath("networks", "temporal.jl"))
-include(joinpath("networks", "spatiotemporal.jl"))
-
-include(joinpath("networks", "generators.jl"))
-include(joinpath("abundance", "generators.jl"))
-include(joinpath("phenologies", "generators.jl"))
-include(joinpath("ranges", "generators.jl"))
-
-include("realizable.jl") =#
 
 end

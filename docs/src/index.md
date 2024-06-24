@@ -2,3 +2,5 @@
 
 Documentation for `SpeciesInteractionSamplers.jl`.
 
+
+[`Scale`](@ref)

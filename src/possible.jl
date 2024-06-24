@@ -12,18 +12,6 @@ function _local_net(idx, net, occ)
     end
     return nothing
 end
-
-function possible(net::Network{Feasible,G}, occ::Occurrence{T}) where {G<:Global,T<:Union{Range,Phenology}}
-    _scale = map(x -> _local_net(x, net, occ), occ)
-    Network{Possible}(species(net), _scale)
-end
-
-possible(
-    net::Network{Feasible,G},
-    phenologies::Occurrence{P},
-    ranges::Occurrence{R}
-) where {G,R<:Range,P<:Phenology} = possible(net, ranges, phenologies)
-
 function _spatiotemporal_local_net(x, t, adj, spnames, spat_pres, temp_pres)
     cooc_onehot = vec(spat_pres[x] .& temp_pres[t])
     if sum(cooc_onehot) > 0
@@ -36,15 +24,28 @@ function _spatiotemporal_local_net(x, t, adj, spnames, spat_pres, temp_pres)
     return nothing
 end
 
+
+function possible(net::Network{Feasible,G}, occ::Occurrence{T}) where {G<:Global,T<:Union{Range,Phenology}}
+    _scale = map(x -> _local_net(x, net, occ), occ)
+    Network{Possible}(species(net), _scale)
+end
+
+possible(
+    net::Network{Feasible,G},
+    phenologies::Occurrence{P},
+    ranges::Occurrence{R}
+) where {G,R<:Range,P<:Phenology} = possible(net, ranges, phenologies)
+
 function possible(
     net::Network{Feasible,G},
     ranges::Occurrence{R},
     phenologies::Occurrence{P}
 ) where {G<:Global,R<:Range,P<:Phenology}
+    sppool = species(net)
+    spnames = sppool.names
     onehot(localspecies) = Bool.(sum(permutedims(localspecies) .== spnames, dims=2))
 
     adj = net.scale.network.edges.edges
-    spnames = species(net).names
 
     spat_pres = [onehot(present(ranges, x)) for x in eachindex(ranges)]
     temp_pres = [onehot(present(phenologies, t)) for t in eachindex(phenologies)]
@@ -52,10 +53,7 @@ function possible(
     _func = (x, t) -> _spatiotemporal_local_net(x, t, adj, spnames, spat_pres, temp_pres)
     st = map(_func, ranges, phenologies)
 
-    Network{Possible}(
-        species(net),
-        st
-    )
+    Network{Possible}(sppool, st)
 end
 
 

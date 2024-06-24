@@ -12,6 +12,11 @@ end
 
 _detection_probability(species_ra, α) = 1 - (1 - species_ra)^α
 
+"""
+    detectability(net::Network{Feasible,<:Global}, detection_model)
+
+Returns a [`Detectable`](@ref) network representing the probability and [`Feasible`](@ref) interaction is successfully detected in presence of an observer.
+"""
 function detectability(
     net::Network{Feasible,<:Global},
     detection_model::RelativeAbundanceScaled
@@ -35,7 +40,11 @@ function detectability(
     return Network{Detectable}(net.species, Global(detect_prob_net))
 end
 
+"""
+    detect(net::Network{Realized,SC}, detection_prob::Network{Detectable,<:Global})
 
+Returns a detected network based on a [`Realized`](@ref) network and a [`Detectable`](@ref) network representing detection probabilities for each interaction.
+"""
 function detect(
     net::Network{Realized,SC},
     detection_prob::Network{Detectable,<:Global}
