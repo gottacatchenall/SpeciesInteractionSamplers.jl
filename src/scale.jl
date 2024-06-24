@@ -1,6 +1,5 @@
 network(s::Scale) = s.network
 adjacency(s::Scale) = adjacency.(network(s))
-adjacency(s::Global) = adjacency(network(s))
 adjacency(s::SpeciesInteractionNetwork) = s.edges.edges
 
 """
@@ -11,6 +10,7 @@ A `Global` [`Scale`](@ref) contains a single `SpeciesInteractionNetwork` that is
 struct Global{SIN<:SpeciesInteractionNetwork} <: Scale
     network::SIN
 end
+adjacency(s::Global) = adjacency(network(s))
 
 """
     Spatial{SIN<:SpeciesInteractionNetwork} <: Scale
