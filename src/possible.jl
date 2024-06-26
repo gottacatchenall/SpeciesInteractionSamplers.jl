@@ -32,11 +32,12 @@ function _spatiotemporal_local_net(x, t, meta_adj, nodes, spat_pres, temp_pres)
 
         local_adj = zeros(Bool, size(meta_adj))
         local_adj[pres, pres] .= meta_adj[pres, pres]
-
-        return SpeciesInteractionNetwork(
-            nodes,
-            Binary(local_adj)
-        )
+        if sum(local_adj) > 0
+            return SpeciesInteractionNetwork(
+                nodes,
+                Binary(local_adj)
+            )
+        end
     end
     return nothing
 end

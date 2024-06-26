@@ -12,7 +12,7 @@ end
 
 foo
 """
-function Base.map(fcn, net::Network{ST,SC}) where {ST<:Union{Spatial,Temporal,Spatiotemporal},SC}
+function Base.map(fcn, net::Network{ST,SC}) where {ST,SC<:Union{<:Spatial,<:Temporal,<:Spatiotemporal}}
     _sc = SC.name.wrapper
     _sc(Union{SpeciesInteractionNetwork,Nothing}[fcn(localnet) for localnet in network(net)])
 end

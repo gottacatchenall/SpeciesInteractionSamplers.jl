@@ -13,7 +13,11 @@ end
 
 Base.show(io::IO, abd::A) where {A<:Abundance} = begin
     x = abd.abundance |> sort |> reverse
-    f = UnicodePlots.scatterplot(x)
+    f = UnicodePlots.scatterplot(
+        x,
+        xlabel="Species Rank",
+        ylabel="Abundance"
+    )
     print(io, f)
 end
 

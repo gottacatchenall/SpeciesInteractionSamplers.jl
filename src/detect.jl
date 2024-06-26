@@ -65,16 +65,19 @@ function detect(
     detection_prob::Network{Detectable,<:Global}
 ) where {SC}
 
+    δ = adjacency(detection_prob)
+    detected_count = zeros(Int, size(δ))
     function _detect(localnet)
         if !isnothing(localnet)
-            detect_counts = Quantitative(zeros(Int, size(localnet)))
-            detected_net = SpeciesInteractionNetwork(localnet.nodes, detect_counts)
-            for int in interactions(localnet)
-                i, j, C = int
-                δᵢⱼ = network(detection_prob)[i, j]
-                detected_net[i, j] = rand(Binomial(C, δᵢⱼ))
+            ζ = adjacency(localnet)
+            detected_count .= 0
+            for idx in findall(!iszero, ζ)
+                detected_count[idx] = rand(Binomial(ζ[idx], δ[idx]))
             end
-            return detected_net
+
+            counts = Quantitative(detected_count)
+            realized_net = SpeciesInteractionNetwork(localnet.nodes, counts)
+            return realized_net
         end
     end
 
@@ -84,7 +87,7 @@ function detect(
         return Network{Detected}(net.species, _scale, network(_scale))
     else
         realized_meta_adj = sum(adjacency.(filter(!isnothing, _scale.network)))
-        realized_meta_sin = SpeciesInteractionNetwork(network(net).nodes, Binary(realized_meta_adj))
+        realized_meta_sin = SpeciesInteractionNetwork(net.metaweb.nodes, Binary(realized_meta_adj))
         return Network{Detected}(net.species, _scale, realized_meta_sin)
     end
 end
