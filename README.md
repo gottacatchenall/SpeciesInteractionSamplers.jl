@@ -25,10 +25,10 @@ feasible_network = generate(NicheModel())
 relative_abundance = generate(NormalizedLogNormal(σ=0.2), λ)
 
 energy = 500
-realization_rate = realizable(feasible_network, NeutrallyForbiddenLinks(relative_abundance, energy))
+realization_rate = realizable(feasible_network, NeutrallyForbiddenLinks(energy), relative_abundance)
 realized_network = realize(θ)
 
-detectability_network = detectability(λ, RelativeAbundanceScaled(relative_abundance, 10.0))
+detectability_network = detectability(λ, RelativeAbundanceScaled(10.0), relative_abundance)
 detected_network = detect(ζ, δ)
 ```
 
