@@ -1,13 +1,9 @@
 function _realize(localnet)
     if !isnothing(localnet)
-        counts = Quantitative(zeros(Int, size(localnet)))
+        adj = adjacency(localnet)
+        ζ = map(θ -> θ > 0 ? rand(Poisson(θ)) : 0, adj)
+        counts = Quantitative(ζ)
         realized_net = SpeciesInteractionNetwork(localnet.nodes, counts)
-        for int in interactions(localnet)
-            i, j, θ = int
-            if θ > 0
-                realized_net[i, j] = rand(Poisson(θ))
-            end
-        end
         return realized_net
     end
 end
