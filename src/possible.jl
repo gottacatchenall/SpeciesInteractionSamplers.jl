@@ -66,6 +66,7 @@ function possible(
     _func = (x, t) -> _spatiotemporal_local_net(x, t, feasible_adj, network(net).nodes, spat_pres, temp_pres)
     _scale = map(_func, ranges, phenologies)
 
+    # TODO: condense these lines into a fcn, they are used here, above, and in realize.jl
     possible_meta_adj = sum(adjacency.(filter(!isnothing, _scale.network)))
     possible_meta_sin = SpeciesInteractionNetwork(network(net).nodes, Binary(possible_meta_adj))
 

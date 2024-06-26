@@ -52,7 +52,7 @@ function detectability(
         δᵢⱼ = _detection_probability(rᵢ, α) * _detection_probability(rⱼ, α)
         detect_prob_net[sᵢ, sⱼ] = δᵢⱼ
     end
-    return Network{Detectable}(net.species, Global(detect_prob_net), net.metaweb)
+    return Network{Detectable}(net.species, Global(detect_prob_net), detect_prob_net)
 end
 
 """
@@ -67,9 +67,9 @@ function detect(
 
     function _detect(localnet)
         if !isnothing(localnet)
-            detect_counts = SpeciesInteractionNetworks.Quantitative(zeros(Int, size(localnet)))
-            detected_net = SpeciesInteractionNetworks.SpeciesInteractionNetwork(localnet.nodes, detect_counts)
-            for int in SpeciesInteractionNetworks.interactions(localnet)
+            detect_counts = Quantitative(zeros(Int, size(localnet)))
+            detected_net = SpeciesInteractionNetwork(localnet.nodes, detect_counts)
+            for int in interactions(localnet)
                 i, j, C = int
                 δᵢⱼ = network(detection_prob)[i, j]
                 detected_net[i, j] = rand(Binomial(C, δᵢⱼ))
@@ -79,5 +79,13 @@ function detect(
     end
 
     _scale = map(_detect, net)
-    Network{Detected}(net.species, _scale, net.metaweb)
+
+    if SC <: Global
+        return Network{Detected}(net.species, _scale, network(_scale))
+    else
+        realized_meta_adj = sum(adjacency.(filter(!isnothing, _scale.network)))
+        realized_meta_sin = SpeciesInteractionNetwork(network(net).nodes, Binary(realized_meta_adj))
+        return Network{Detected}(net.species, _scale, realized_meta_sin)
+    end
 end
+
