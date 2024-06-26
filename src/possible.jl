@@ -73,6 +73,3 @@ function possible(
 end
 
 
-function aggregate(net::Network)
-    ∪(filter(!isnothing, network(net))...)
-end
