@@ -31,3 +31,9 @@ realized_network = realize(θ)
 detectability_network = detectability(λ, RelativeAbundanceScaled(relative_abundance, 10.0))
 detected_network = detect(ζ, δ)
 ```
+
+# API Design
+
+A thorough description of the `SpeciesInteractionSamplers.jl` API can be found in the documentation. A diagram conveying the essentials can be seen below.
+
+![](https://github.com/gottacatchenall/SpeciesInteractionSamplers.jl/blob/main/docs/src/design.png)
