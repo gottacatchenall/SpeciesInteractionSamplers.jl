@@ -17,7 +17,7 @@ end
 Base.length(net::Network) = length(scale(net))
 Base.eachindex(net::Network) = eachindex(scale(net))
 Base.getindex(net::Network, x) = getindex(scale(net), x)
-Base.size(net::Network) = size(network(net))
+Base.size(net::Network) = size(net.metaweb)
 
 
 """
@@ -89,7 +89,8 @@ end
 
 
 Base.show(io::IO, net::Network{ST,SP}) where {ST,SP} = begin
-    unique_ints, sz = sum(adjacency(net.metaweb)), size(scale(net))
+    total_ints, sz = sum(adjacency(net.metaweb)), size(net)
+    unique_ints = sum(adjacency(net.metaweb) .> 0)
     details = """
         - $unique_ints unique interactions, $(richness(net)) species  (density = $(unique_ints/(prod(sz))))
         - $sz spatial resolution

@@ -7,16 +7,9 @@ Base.eachindex(occ::Occurrence{<:Range}) = CartesianIndices(occurrence(occ)[begi
 Base.size(occ::Occurrence) = size(occurrence(occ)[begin])
 occurrence(occ::Occurrence) = occurrence.(occ.occurrence)
 
-function present(occ::Occurrence{R}, idx) where {R<:Range}
-    rangemaps = occurrence(occ)
-    occ.species[findall([r[idx] > 0 for r in rangemaps])]
+function present(occ::Occurrence, idx)
+    findall([r[idx] > 0 for r in occurrence(occ)])
 end
-
-function present(occ::Occurrence{P}, idx) where {P<:Phenology}
-    timeseries = occurrence(occ)
-    occ.species[findall([t[idx] > 0 for t in timeseries])]
-end
-
 
 function generate(
     gen::Union{RG,PG},

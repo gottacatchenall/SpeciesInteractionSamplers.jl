@@ -4,30 +4,41 @@ function possible(args...)
 end
 
 function _local_net(idx, net, occ)
+    meta_adj = adjacency(net)
     pres = present(occ, idx)
-    localnet = subgraph(network(net), pres)
 
-    if length(interactions(localnet)) > 0
-        return localnet
+    local_adj = zeros(Bool, size(meta_adj))
+    local_adj[pres, pres] .= meta_adj[pres, pres]
+    if sum(local_adj) > 0
+        return SpeciesInteractionNetwork(network(net).nodes, Binary(local_adj))
     end
     return nothing
 end
-function _spatiotemporal_local_net(x, t, adj, spnames, spat_pres, temp_pres)
+
+function possible(
+    net::Network{Feasible,G},
+    occ::Occurrence{T}
+) where {G<:Global,T<:Union{Range,Phenology}}
+    _scale = map(x -> _local_net(x, net, occ), occ)
+    possible_meta_adj = sum(adjacency.(filter(!isnothing, _scale.network)))
+    possible_meta_sin = SpeciesInteractionNetwork(network(net).nodes, Binary(possible_meta_adj))
+    Network{Possible}(species(net), _scale, possible_meta_sin)
+end
+
+function _spatiotemporal_local_net(x, t, meta_adj, nodes, spat_pres, temp_pres)
     cooc_onehot = vec(spat_pres[x] .& temp_pres[t])
     if sum(cooc_onehot) > 0
-        cooc_idx = findall(cooc_onehot)
+        pres = findall(cooc_onehot)
+
+        local_adj = zeros(Bool, size(meta_adj))
+        local_adj[pres, pres] .= meta_adj[pres, pres]
+
         return SpeciesInteractionNetwork(
-            Unipartite(spnames[cooc_idx]),
-            Binary(adj[cooc_idx, cooc_idx])
+            nodes,
+            Binary(local_adj)
         )
     end
     return nothing
-end
-
-
-function possible(net::Network{Feasible,G}, occ::Occurrence{T}) where {G<:Global,T<:Union{Range,Phenology}}
-    _scale = map(x -> _local_net(x, net, occ), occ)
-    Network{Possible}(species(net), _scale, net.metaweb)
 end
 
 possible(
@@ -43,18 +54,25 @@ function possible(
 ) where {G<:Global,R<:Range,P<:Phenology}
     sppool = species(net)
     spnames = sppool.names
-    onehot(localspecies) = Bool.(sum(permutedims(localspecies) .== spnames, dims=2))
-
-    adj = net.scale.network.edges.edges
+    onehot(localspecies_idx) = begin
+        x = zeros(Bool, length(spnames))
+        x[localspecies_idx] .= 1
+        return x
+    end
+    feasible_adj = adjacency(net)
 
     spat_pres = [onehot(present(ranges, x)) for x in eachindex(ranges)]
     temp_pres = [onehot(present(phenologies, t)) for t in eachindex(phenologies)]
+    _func = (x, t) -> _spatiotemporal_local_net(x, t, feasible_adj, network(net).nodes, spat_pres, temp_pres)
+    _scale = map(_func, ranges, phenologies)
 
-    _func = (x, t) -> _spatiotemporal_local_net(x, t, adj, spnames, spat_pres, temp_pres)
-    st = map(_func, ranges, phenologies)
+    possible_meta_adj = sum(adjacency.(filter(!isnothing, _scale.network)))
+    possible_meta_sin = SpeciesInteractionNetwork(network(net).nodes, Binary(possible_meta_adj))
 
-    Network{Possible}(sppool, st, net.metaweb)
+    Network{Possible}(sppool, _scale, possible_meta_sin)
 end
 
 
-
+function aggregate(net::Network)
+    ∪(filter(!isnothing, network(net))...)
+end
