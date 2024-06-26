@@ -5,9 +5,8 @@ Model for generation detection probability where the probability of detecting an
 a product of the detection probabilities for each species, treated as independent of one-another. 
 
 """
-struct RelativeAbundanceScaled <: DetectionModel
-    relabd::Abundance{RelativeAbundance}
-    scaling_param
+@kwdef struct RelativeAbundanceScaled{T<:Real} <: DetectionModel
+    scaling_param::T = 50.0
 end
 
 _detection_probability(species_ra, α) = 1 - (1 - species_ra)^α
@@ -21,8 +20,8 @@ Base.show(io::IO, ras::RelativeAbundanceScaled) = begin
         ylabel="Detection Probability",
     )
 
-    pts = map(x -> _detection_probability(x, ras.scaling_param), ras.relabd.abundance)
-    scatterplot!(p, log.(ras.relabd.abundance), pts, marker=:xcross, color=:blue)
+    #pts = map(x -> _detection_probability(x, ras.scaling_param), ras.relabd.abundance)
+    #scatterplot!(p, log.(ras.relabd.abundance), pts, marker=:xcross, color=:blue)
     print(io, p)
 end
 
@@ -33,11 +32,11 @@ end
 Returns a [`Detectable`](@ref) network representing the probability and [`Feasible`](@ref) interaction is successfully detected in presence of an observer.
 """
 function detectability(
+    detection_model::RelativeAbundanceScaled,
     net::Network{Feasible,<:Global},
-    detection_model::RelativeAbundanceScaled
-)
+    relabd::RA
+) where {RA<:Abundance{RelativeAbundance}}
 
-    ra = detection_model.relabd
     α = detection_model.scaling_param
     ints = SpeciesInteractionNetworks.interactions(network(net))
 
@@ -46,7 +45,7 @@ function detectability(
     detect_prob_net = SpeciesInteractionNetworks.SpeciesInteractionNetwork(network(net).nodes, detect_probs)
     for int in ints
         sᵢ, sⱼ, _ = int
-        rᵢ, rⱼ = ra[sᵢ], ra[sⱼ]
+        rᵢ, rⱼ = relabd[sᵢ], relabd[sⱼ]
         # NOTE: theres no reason this can't be a joint distribution, w/o independence
         # assumption. But for now...
         δᵢⱼ = _detection_probability(rᵢ, α) * _detection_probability(rⱼ, α)

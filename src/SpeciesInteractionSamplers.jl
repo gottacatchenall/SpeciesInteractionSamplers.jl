@@ -62,9 +62,11 @@ export AbundanceTrait
 export RelativeAbundance, Density, Count
 
 #export Binary, Probability
-
+export sample
+export falsenegativerate
+export SpeciesInteractionSampler, Sample
 # Network utils
-export mirror, aggregate
+export mirror
 export scale
 export species, richness, adjacency, numspecies
 
@@ -77,10 +79,12 @@ include("range.jl")
 include("phenology.jl")
 include("occupancy.jl")
 
+
 include("map.jl")
 include("possible.jl")
 include("realizable.jl")
 include("realize.jl")
 include("detect.jl")
 
+include("samplers.jl")
 end
