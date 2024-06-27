@@ -11,13 +11,13 @@ using SpeciesInteractionSamplers
 ```
 
 ```@example 1
-energy = 200
-λ = generate(NicheModel())
-relabd = generate(NormalizedLogNormal(σ=0.2), λ)
-θ = realizable(λ, NeutrallyForbiddenLinks(relabd, energy))
-ζ = realize(θ)
+feasible_network = generate(NicheModel())
+relative_abundance = generate(NormalizedLogNormal(σ=0.2), λ)
 
-δ = detectability(λ, RelativeAbundanceScaled(relabd, 20.))
+energy = 500
+realization_rate = realizable(feasible_network, NeutrallyForbiddenLinks(energy), relative_abundance)
+realized_network = realize(θ)
 
-detect(ζ, δ)
+detectability_network = detectability(λ, RelativeAbundanceScaled(10.0), relative_abundance)
+detected_network = detect(ζ, δ)
 ```

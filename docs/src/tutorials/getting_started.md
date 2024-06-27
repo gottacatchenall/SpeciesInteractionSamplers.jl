@@ -24,8 +24,8 @@ relabd = generate(NormalizedLogNormal(), net)
 foo
 
 ```@example 1
-realization_model = NeutrallyForbiddenLinks(relabd, 100.)
-θ = realizable(net, realization_model)
+realization_model = NeutrallyForbiddenLinks(100.)
+θ = realizable(realization_model, net, relabd)
 ```
 
 foo
@@ -38,8 +38,8 @@ foo
 foo
 
 ```@example 1
-detection_model = RelativeAbundanceScaled(relabd, 10)
-δ = detectability(net, detection_model)
+detection_model = RelativeAbundanceScaled(10)
+δ = detectability(detection_model, net, relabd)
 ```
 
 foo
