@@ -17,8 +17,11 @@ end
 Base.length(net::Network) = length(scale(net))
 Base.eachindex(net::Network) = eachindex(scale(net))
 Base.getindex(net::Network, x) = getindex(scale(net), x)
+
+#TODO: how to deal with spatial size vs network size?
 Base.size(net::Network) = size(net.metaweb)
 
+resolution(net::Network) = resolution(scale(net))
 
 """
     scale(net::Network)
@@ -89,7 +92,7 @@ end
 
 
 Base.show(io::IO, net::Network{ST,SP}) where {ST,SP} = begin
-    total_ints, sz = sum(adjacency(net.metaweb)), size(net)
+    total_ints, sz = sum(adjacency(net.metaweb)), resolution(net)
     unique_ints = sum(adjacency(net.metaweb) .> 0)
     details = """
         - $unique_ints unique interactions, $(richness(net)) species  (density = $(unique_ints/(prod(sz))))
@@ -105,6 +108,44 @@ Base.show(io::IO, net::Network{ST,SP}) where {ST,SP} = begin
         print(io, details)
     end
 end
+
+_label(::Type{Possible}) = "Number possible interactions across domain"
+_label(::Type{Realizable}) = "Total rate across domain"
+_label(::Type{Realized}) = "Number of realized interactions"
+_label(::Type{Detected}) = "Number of detected interactions"
+_label(::Type{Detectable}) = "Detection probability"
+
+
+function plot(net::Network{ST,<:Global}; args...) where {ST}
+    f = Figure()
+    ax = Axis(
+        f[1, 1];
+        args...
+    )
+    hm = CairoMakie.heatmap!(
+        ax,
+        adjacency(net),
+    )
+    Colorbar(f[1, 2], hm, label=_label(ST))
+    return f
+end
+
+
+function plot(net::Network{ST,SC}; args...) where {ST,SC<:Scale}
+
+    f = Figure()
+    ax = Axis(
+        f[1, 1];
+        args...
+    )
+    hm = CairoMakie.heatmap!(
+        ax,
+        Matrix(adjacency(net.metaweb)),
+    )
+    Colorbar(f[1, 2], hm, label=_label(ST))
+    return f
+end
+
 
 # ==============================================================
 #
@@ -130,7 +171,6 @@ Generates a [`Feasible`](@ref) [`Network`](@ref) using the niche model for food-
 function generate(gen::NicheModel)
     S, C = gen.species, gen.connectance
     net = SpeciesInteractionNetworks.structuralmodel(SpeciesInteractionNetworks.NicheModel, S, C)
-    net = mirror(net)
     sp = SpeciesPool(SpeciesInteractionNetworks.species(net))
     Network{Feasible}(sp, Global(net), net)
 end
@@ -166,14 +206,20 @@ Method for generating a [`Feasible`](@ref) [`Network`](@ref) using a [`Stochasti
 """
 function generate(sbm::StochasticBlockModel)
     y, M = sbm.node_ids, sbm.mixing_matrix
+
     adj_prob = [M[y[i], y[j]] for i in eachindex(y), j in eachindex(y)]
-    adj = map(x -> rand() < x, adj_prob)
+
+
+    for I in CartesianIndices(adj_prob)
+        if I[1] < I[2]
+            adj[idx] = rand() < adj_prob[I]
+        end
+    end
     speciespool = SpeciesPool([Symbol("node_$i") for i in 1:size(adj, 1)])
     net = simplify(SpeciesInteractionNetwork(
         Unipartite(speciespool.names),
         Binary(adj),
     ))
-    net = mirror(net)
 
     Network{Feasible}(speciespool, Global(net), net)
 end

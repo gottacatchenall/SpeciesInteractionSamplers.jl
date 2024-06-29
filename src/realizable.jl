@@ -1,5 +1,5 @@
 @kwdef struct NeutrallyForbiddenLinks <: RealizationModel
-    energy = 100. # TODO: refactor so energy can be a scalar/tensor that matches the scale of the network `realizable` is called on 
+    energy = 100.0 # TODO: refactor so energy can be a scalar/tensor that matches the scale of the network `realizable` is called on 
 end
 struct Equal <: RealizationModel end
 
@@ -28,10 +28,21 @@ function realizable(
 ) where {N<:Union{Network{<:Feasible},Network{<:Possible}},RA<:Abundance{RelativeAbundance}}
     relabd_mat = relabd.abundance .* relabd.abundance'
     θ = zeros(Float32, size(net))
-    _scale = map(x -> _rate_matrix(x, θ, relabd_mat, nfl.energy), net)
+
+    # TODO: figure out how to deal wiht variance in energy
+
+    unique_localities = prod(resolution(net)) * length(net)
+
+    E = nfl.energy / unique_localities
+    _scale = map(x -> _rate_matrix(x, θ, relabd_mat, E), net)
+
+    adj = sum(adjacency.(filter(!isnothing, _scale.network)))
+    mw = SpeciesInteractionNetwork(net.metaweb.nodes, Binary(adj))
+
+
     Network{Realizable}(
         net.species,
         _scale,
-        net.metaweb
+        mw
     )
 end

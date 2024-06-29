@@ -11,9 +11,18 @@ end
 
 function realize(net::Network{Realizable,SC}) where {SC}
     _scale = map(_realize, net)
+
+    mw_adj = sum(adjacency.(filter(!isnothing, _scale.network)))
+
+    mw = SpeciesInteractionNetwork(
+        net.metaweb.nodes,
+        Binary(mw_adj)
+    )
+
+
     Network{Realized}(
         net.species,
         _scale,
-        net.metaweb
+        mw
     )
 end

@@ -11,6 +11,7 @@ struct Global{SIN<:SpeciesInteractionNetwork} <: Scale
     network::SIN
 end
 adjacency(s::Global) = adjacency(network(s))
+resolution(s::Global) = (1, 1)
 Base.length(::Global) = 1
 
 """
@@ -24,6 +25,7 @@ Base.length(::Spatial) = 1
 Base.eachindex(s::Spatial) = CartesianIndices(network(s))
 Base.getindex(s::Spatial, ci::CartesianIndex) = network(s)[ci]
 Base.getindex(s::Spatial, i::Integer) = network(s)[i]
+resolution(s::Spatial) = size(s.network)
 
 """
     Temporal{SIN<:SpeciesInteractionNetwork} <: Scale
@@ -35,6 +37,7 @@ Base.size(::Temporal) = (1, 1)
 Base.length(t::Temporal) = length(network(t))
 Base.eachindex(t::Temporal) = eachindex(network(t))
 Base.getindex(t::Temporal, i::Integer) = network(t)[i]
+resolution(::Temporal) = (1, 1)
 
 """
     Spatiotemporal{SIN<:SpeciesInteractionNetwork} <: Scale
@@ -42,7 +45,8 @@ Base.getindex(t::Temporal, i::Integer) = network(t)[i]
 struct Spatiotemporal{SIN<:SpeciesInteractionNetwork} <: Scale
     network::Array{Union{SIN,Nothing},3}
 end
-Base.size(st::Spatiotemporal) = size(network(st))[1:2]
+Base.size(st::Spatiotemporal) = size(st.network[begin])
 Base.length(st::Spatiotemporal) = size(network(st), 3)
+resolution(st::Spatiotemporal) = size(st.network)[1:2]
 
 

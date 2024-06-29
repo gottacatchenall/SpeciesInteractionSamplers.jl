@@ -13,6 +13,7 @@ _detection_probability(species_ra, α) = 1 - (1 - species_ra)^α
 
 Base.show(io::IO, ras::RelativeAbundanceScaled) = begin
     X = 0.0:0.01:1
+    # The expected value of the RAs is 1/num_species,
     Y = map(x -> _detection_probability(x, ras.scaling_param), X)
 
     p = lineplot(log.(X), Y,

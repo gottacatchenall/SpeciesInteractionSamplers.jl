@@ -61,7 +61,6 @@ export Abundance
 export AbundanceTrait
 export RelativeAbundance, Density, Count
 
-#export Binary, Probability
 export sample
 export falsenegativerate
 export SpeciesInteractionSampler, Sample
@@ -69,6 +68,9 @@ export SpeciesInteractionSampler, Sample
 export mirror
 export scale
 export species, richness, adjacency, numspecies
+export resolution
+
+export plot
 
 include("types.jl")
 include("scale.jl")

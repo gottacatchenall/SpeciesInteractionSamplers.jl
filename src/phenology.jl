@@ -12,6 +12,22 @@ Base.show(io::IO, phen::Phenology) = begin
     print(io, p)
 end
 
+function plot(phen::P) where {P<:Phenology}
+    f = Figure()
+    ax = Axis(
+        f[1, 1],
+        xlabel="Day of season",
+        ylabel="Occurrence",
+        yticks=(0:1, ["false", "true"])
+    )
+    CairoMakie.scatterlines!(
+        ax,
+        occurrence(phen)
+    )
+    return f
+end
+
+
 
 # ========================================
 #

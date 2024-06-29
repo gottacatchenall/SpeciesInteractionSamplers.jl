@@ -32,6 +32,20 @@ Base.show(io::IO, occ::Occurrence{<:Range}) = begin
     print(io, p)
 end
 
+function plot(occ::Occurrence{<:Range})
+    sp_richness = sum(occurrence(occ))
+
+    f = Figure()
+    ax = Axis(
+        f[1, 1],
+        xlabel="x",
+        ylabel="y"
+    )
+    hm = CairoMakie.heatmap!(ax, sp_richness)
+    Colorbar(f[1, 2], hm, label="Species Richness")
+    return f
+end
+
 Base.show(io::IO, occ::Occurrence{<:Phenology}) = begin
     phen = sum(occurrence(occ))
     p = UnicodePlots.lineplot(
@@ -42,3 +56,16 @@ Base.show(io::IO, occ::Occurrence{<:Phenology}) = begin
     print(io, p)
 end
 
+function plot(occ::Occurrence{<:Phenology})
+    phen = sum(occurrence(occ))
+
+    f = Figure()
+    ax = Axis(
+        f[1, 1],
+        xlabel="Day of season",
+        ylabel="Species richness",
+    )
+
+    lines!(ax, phen)
+    return f
+end
