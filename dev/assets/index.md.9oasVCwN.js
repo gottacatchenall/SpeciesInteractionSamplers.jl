@@ -1,0 +1,9 @@
+import{_ as e,c as a,o as n,a6 as s}from"./chunks/framework.OLzPTGuc.js";const t="/SpeciesInteractionSamplers.jl/dev/assets/concept.z8Br-1TZ.png",i="/SpeciesInteractionSamplers.jl/dev/assets/design.Cf-aeJq2.png",S=JSON.parse('{"title":"SpeciesInteractionSamplers.jl","description":"","frontmatter":{},"headers":[],"relativePath":"index.md","filePath":"index.md","lastUpdated":null}'),p={name:"index.md"},l=s('<h1 id="speciesinteractionsamplers-jl" tabindex="-1">SpeciesInteractionSamplers.jl <a class="header-anchor" href="#speciesinteractionsamplers-jl" aria-label="Permalink to &quot;SpeciesInteractionSamplers.jl&quot;">​</a></h1><p>Documentation for <code>SpeciesInteractionSamplers.jl</code>.</p><p><img src="'+t+'" alt=""></p><p><img src="'+i+`" alt=""></p><div class="language-@example vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">@example</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line highlighted"><span>feasible_network = generate(NicheModel())</span></span>
+<span class="line"><span>relative_abundance = generate(NormalizedLogNormal(σ=0.2), λ)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>energy = 500</span></span>
+<span class="line"><span>realization_rate = realizable(feasible_network, NeutrallyForbiddenLinks(energy), relative_abundance)</span></span>
+<span class="line"><span>realized_network = realize(θ)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>detectability_network = detectability(λ, RelativeAbundanceScaled(10.0), relative_abundance)</span></span>
+<span class="line"><span>detected_network = detect(ζ, δ)</span></span></code></pre></div>`,5),c=[l];function r(o,d,_,m,h,g){return n(),a("div",null,c)}const b=e(p,[["render",r]]);export{S as __pageData,b as default};
