@@ -36,7 +36,13 @@ function realizable(
     E = nfl.energy / unique_localities
     _scale = map(x -> _rate_matrix(x, θ, relabd_mat, E), net)
 
-    adj = sum(adjacency.(filter(!isnothing, _scale.network)))
+    adj = nothing
+    if typeof(_scale) <: Global 
+        adj = adjacency(_scale) 
+    else 
+        adj = sum(adjacency.(filter(x->!isnothing(x), _scale.network)))
+    end 
+    
     mw = SpeciesInteractionNetwork(net.metaweb.nodes, Binary(adj))
 
 
