@@ -75,7 +75,11 @@ function detect!(
     
     mw.state = Detected
 
-    map(_detect!, mw.scale.network[mw.scale.mask])
+    _net = SC <: Global ? [mw.scale.network] : mw.scale.network[mw.scale.mask]
+    map(_detect!, _net)
+
     mw 
 end
+
+
 

@@ -36,7 +36,10 @@ function realizable!(
     relabd_mat = relabd.abundance .* relabd.abundance'
     unique_localities = prod(resolution(mw)) * length(mw)
     E = nfl.energy / unique_localities
-    map(x -> _nfl_rate_matrix!(x, relabd_mat, E), mw.scale.network[mw.scale.mask])
+
+    _net = typeof(mw.scale) <: Global ? [mw.scale.network] : mw.scale.network[mw.scale.mask]
+
+    map(x -> _nfl_rate_matrix!(x, relabd_mat, E), _net)
 
     _compute_new_metaweb!(mw)
     mw.state = Realizable

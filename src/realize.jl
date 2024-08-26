@@ -8,7 +8,10 @@ end
 
 
 function realize!(mw::Metaweb{SC}) where {SC}
-    map(_realize!, mw.scale.network[mw.scale.mask])
+
+    # this is used everywhere, should be a fcn
+    _net = SC <: Global ? [mw.scale.network] : mw.scale.network[mw.scale.mask] 
+    map(_realize!, _net)
 
     mw_adj = SC <: Global ? adjacency(mw.scale.network) : sum(adjacency.(filter(!isnothing, mw.scale.network)))
    

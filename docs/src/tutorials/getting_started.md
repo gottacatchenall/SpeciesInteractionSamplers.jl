@@ -25,13 +25,13 @@ foo
 
 ```@example 1
 realization_model = NeutrallyForbiddenLinks(100.)
-θ = realizable(realization_model, net, relabd)
+realizable!(realization_model, net, relabd)
 ```
 
 foo
 
 ```@example 1
-ζ = realize(θ)
+realize!(net)
 ```
 
 
@@ -45,7 +45,7 @@ detection_model = RelativeAbundanceScaled(10)
 foo
 
 ```@example 1
-detect(ζ, δ)
+detect!(net, δ)
 ```
 
 foo

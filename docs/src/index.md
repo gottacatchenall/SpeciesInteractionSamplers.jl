@@ -12,12 +12,12 @@ using SpeciesInteractionSamplers
 
 ```@example 1
 feasible_network = generate(NicheModel())
-relative_abundance = generate(NormalizedLogNormal(σ=0.2), λ)
+relative_abundance = generate(NormalizedLogNormal(σ=0.2), feasible_network)
 
 energy = 500
-realization_rate = realizable(feasible_network, NeutrallyForbiddenLinks(energy), relative_abundance)
-realized_network = realize(θ)
+realization_rate = realizable!(NeutrallyForbiddenLinks(energy), feasible_network, relative_abundance)
+realized_network = realize!(feasible_network)
 
-detectability_network = detectability(λ, RelativeAbundanceScaled(10.0), relative_abundance)
-detected_network = detect(ζ, δ)
+detectability_network = detectability(RelativeAbundanceScaled(10.0),feasible_network, relative_abundance)
+detected_network = detect!(feasible_network, detectability_network)
 ```
