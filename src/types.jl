@@ -6,17 +6,17 @@ Abstract type that is the supertype for any object passed to the [`generate`](@r
 abstract type GenerationModel end
 
 """
-    abstract type NetworkGenerator <: GenerationModel end 
+    abstract type MetawebGenerator <: GenerationModel end 
 
-A supertype for all methods used to generate [`Feasible`](@ref) [`Network`](@ref)s.
+A supertype for all methods used to generate [`Feasible`](@ref) [`Metaweb`](@ref)s.
 
-Currently, the concrete instances of `NetworkGenerator` are
+Currently, the concrete instances of `MetawebGenerator` are
 
 - [`StochasticBlockModel`](@ref)
 - [`NicheModel`](@ref)
 
 """
-abstract type NetworkGenerator <: GenerationModel end
+abstract type MetawebGenerator <: GenerationModel end
 
 """
     AbundanceGenerator
@@ -52,7 +52,7 @@ abstract type RangeGenerator <: GenerationModel end
 """
     abstract type State end
 
-An supertype for all possible forms a [`Network`](@ref) can take. The set of subtypes for state are:
+An supertype for all possible forms a [`Metaweb`](@ref) can take. The set of subtypes for state are:
 
 - [`Feasible`](@ref)
 - [`Possible`](@ref)
@@ -66,7 +66,7 @@ abstract type State end
 """
     abstract type Feasible <: State end
 
-A [`Network`](@ref) is `Feasible` if it represents all interactions that are biologically capable of happening between pairs of species. 
+A [`Metaweb`](@ref) is `Feasible` if it represents all interactions that are biologically capable of happening between pairs of species. 
 
 Note that this does not mean that the interaction has ever been realized---for example, many interactions that are feasible may not have occurred in the present or past as the constituent species may never have co-occurred, but may become realizable in the future as species [`Range`](@ref)s and [`Phenology`](@ref)s change.
 """
@@ -75,7 +75,7 @@ abstract type Feasible <: State end
 """
     abstract type Possible <: State end
 
-A `Possible` [`Network`](@ref) represents interactions between species that can both (a) feasibly interact and (b) co-occur at a given place/time. 
+A `Possible` [`Metaweb`](@ref) represents interactions between species that can both (a) feasibly interact and (b) co-occur at a given place/time. 
 """
 abstract type Possible <: State end
 
@@ -85,7 +85,7 @@ abstract type Possible <: State end
 
 A `Realizable` network represents the possible interactions in a network, but is distinct from `Possible` networks because it contains the _rate of realization_ for each interaction.
 
-Realizable networks are created using the [`realizable`](@ref) method called on a [`Possible`](@ref) [`Network`](@ref) and a [`RealizationModel`](@ref).
+Realizable networks are created using the [`realizable`](@ref) method called on a [`Possible`](@ref) [`Metaweb`](@ref) and a [`RealizationModel`](@ref).
 """
 abstract type Realizable <: State end
 
@@ -101,7 +101,7 @@ abstract type Realized <: State end
 
 A `Detectable` network represents the probability that any [`Feasible`](@ref) interaction will successfully be detected if it occurs in the presence of an observed.
 
-`Detectable` networks are created using the [`detectable`](@ref) method called on a [`Feasible`](@ref) [`Network`](@ref) and a [`DetectionModel`](@ref)
+`Detectable` networks are created using the [`detectable`](@ref) method called on a [`Feasible`](@ref) [`Metaweb`](@ref) and a [`DetectionModel`](@ref)
 """
 abstract type Detectable <: State end
 
@@ -110,7 +110,7 @@ abstract type Detectable <: State end
 
 A `Detected` network represents the discrete number of detected interactions between each pair of species at each place/time.
 
-`Detected` networks are created using the [`detect`](@ref) method called on a [`Realized`](@ref) [`Network`](@ref) and a [`Detectable`](@ref) [`Network`](@ref)
+`Detected` networks are created using the [`detect`](@ref) method called on a [`Realized`](@ref) [`Metaweb`](@ref) and a [`Detectable`](@ref) [`Metaweb`](@ref)
 """
 abstract type Detected <: State end
 
@@ -155,7 +155,7 @@ abstract type Count <: AbundanceTrait end
 """
     abstract type RealizationModel end
 
-Supertype for all models that describe how a [`Network`](@ref) goes from [`Possible`](@ref) to [`Realizable`](@ref)
+Supertype for all models that describe how a [`Metaweb`](@ref) goes from [`Possible`](@ref) to [`Realizable`](@ref)
 """
 abstract type RealizationModel end
 

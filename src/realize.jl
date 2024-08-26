@@ -1,28 +1,22 @@
-function _realize(localnet)
-    if !isnothing(localnet)
-        adj = adjacency(localnet)
-        ζ = map(θ -> θ > 0 ? rand(Poisson(θ)) : 0, adj)
-        counts = Quantitative(ζ)
-        realized_net = SpeciesInteractionNetwork(localnet.nodes, counts)
-        return realized_net
-    end
+function _realize!(localnet)
+    xs, ys, θs = SparseArrays.findnz(adjacency(localnet))
+    for idx in eachindex(xs)
+        i,j, θ = xs[idx], ys[idx], θs[idx]
+        localnet.edges.edges[i,j] = rand(Poisson(θ))
+    end 
 end
 
 
-function realize(net::Network{Realizable,SC}) where {SC}
-    _scale = map(_realize, net)
+function realize!(mw::Metaweb{SC}) where {SC}
+    map(_realize!, mw.scale.network[mw.scale.mask])
 
-    mw_adj = SC <: Global ? adjacency(_scale.network) : sum(adjacency.(filter(!isnothing, _scale.network)))
-
-    mw = SpeciesInteractionNetwork(
-        net.metaweb.nodes,
-        Binary(mw_adj)
+    mw_adj = SC <: Global ? adjacency(mw.scale.network) : sum(adjacency.(filter(!isnothing, mw.scale.network)))
+   
+    mw.state = Realized
+    mw.metaweb = SpeciesInteractionNetwork(
+        mw.metaweb.nodes,
+        Quantitative(mw_adj)
     )
 
-
-    Network{Realized}(
-        net.species,
-        _scale,
-        mw
-    )
+    mw
 end

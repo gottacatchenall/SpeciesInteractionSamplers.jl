@@ -34,8 +34,8 @@ struct TrophicScaling <: AbundanceGenerator end
     σ = 1.0
 end
 
-function generate(nln::NormalizedLogNormal, net::N) where {N<:Network}
-    ra = rand(Truncated(LogNormal(0, nln.σ), 0, Inf), numspecies(net))
+function generate(nln::NormalizedLogNormal, mw::M) where {M<:Metaweb}
+    ra = rand(Truncated(LogNormal(0, nln.σ), 0, Inf), numspecies(mw))
     ra ./= sum(ra)
-    return Abundance{RelativeAbundance}(species(net), ra)
+    return Abundance{RelativeAbundance}(species(mw), ra)
 end

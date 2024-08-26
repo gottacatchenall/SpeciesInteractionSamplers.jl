@@ -13,7 +13,7 @@ end
 Returns the occurrence raster associated with a [`Range`](@ref)
 """
 occurrence(r::Range) = r.range_map
-
+Base.getindex(r::Range, idx::CartesianIndex{2}) = r.range_map[idx]
 Base.size(r::Range) = size(r.range_map)
 Base.show(io::IO, r::R) where {R<:Range} = begin
     tprint(io, "{green}$R with dimensions $(size(r.range_map)){/green}\n")

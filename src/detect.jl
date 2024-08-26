@@ -28,22 +28,22 @@ end
 
 
 """
-    detectability(net::Network{Feasible,<:Global}, detection_model)
+    detectability(net::Metaweb{Feasible,<:Global}, detection_model)
 
 Returns a [`Detectable`](@ref) network representing the probability and [`Feasible`](@ref) interaction is successfully detected in presence of an observer.
 """
 function detectability(
     detection_model::RelativeAbundanceScaled,
-    net::Network{Feasible,<:Global},
+    net::Metaweb{<:Global},
     relabd::RA
 ) where {RA<:Abundance{RelativeAbundance}}
 
     α = detection_model.scaling_param
-    ints = SpeciesInteractionNetworks.interactions(network(net))
+    ints = SpeciesInteractionNetworks.interactions(networks(net))
 
     detect_probs = SpeciesInteractionNetworks.Quantitative(zeros(Float64, size(net)))
 
-    detect_prob_net = SpeciesInteractionNetworks.SpeciesInteractionNetwork(network(net).nodes, detect_probs)
+    detect_prob_net = SpeciesInteractionNetworks.SpeciesInteractionNetwork(networks(net).nodes, detect_probs)
     for int in ints
         sᵢ, sⱼ, _ = int
         rᵢ, rⱼ = relabd[sᵢ], relabd[sⱼ]
@@ -52,43 +52,30 @@ function detectability(
         δᵢⱼ = _detection_probability(rᵢ, α) * _detection_probability(rⱼ, α)
         detect_prob_net[sᵢ, sⱼ] = δᵢⱼ
     end
-    return Network{Detectable}(net.species, Global(detect_prob_net), detect_prob_net)
+    return Metaweb(Detectable, net.species, Global(detect_prob_net), detect_prob_net)
 end
 
 """
-    detect(net::Network{Realized,SC}, detection_prob::Network{Detectable,<:Global})
+    detect(net::Metaweb{Realized,SC}, detection_prob::Metaweb{Detectable,<:Global})
 
 Returns a detected network based on a [`Realized`](@ref) network and a [`Detectable`](@ref) network representing detection probabilities for each interaction.
 """
-function detect(
-    net::Network{Realized,SC},
-    detection_prob::Network{Detectable,<:Global}
+function detect!(
+    mw::Metaweb{SC},
+    detection_prob::Metaweb{<:Global}
 ) where {SC}
-
-    δ = adjacency(detection_prob)
-    detected_count = zeros(Int, size(δ))
-    function _detect(localnet)
-        if !isnothing(localnet)
-            ζ = adjacency(localnet)
-            detected_count .= 0
-            for idx in findall(!iszero, ζ)
-                detected_count[idx] = rand(Binomial(ζ[idx], δ[idx]))
-            end
-
-            counts = Quantitative(detected_count)
-            realized_net = SpeciesInteractionNetwork(localnet.nodes, counts)
-            return realized_net
-        end
+    δ = detection_prob.metaweb
+    function _detect!(localnet)
+        xs, ys, ζs = SparseArrays.findnz(adjacency(localnet))
+        for idx in eachindex(xs)
+            i,j, ζ = xs[idx], ys[idx], ζs[idx]
+            localnet.edges.edges[i,j] = rand(Binomial(ζ, δ[i,j]))
+        end 
     end
+    
+    mw.state = Detected
 
-    _scale = map(_detect, net)
-
-    if SC <: Global
-        return Network{Detected}(net.species, _scale, network(_scale))
-    else
-        realized_meta_adj = sum(adjacency.(filter(!isnothing, _scale.network)))
-        realized_meta_sin = SpeciesInteractionNetwork(net.metaweb.nodes, Binary(realized_meta_adj))
-        return Network{Detected}(net.species, _scale, realized_meta_sin)
-    end
+    map(_detect!, mw.scale.network[mw.scale.mask])
+    mw 
 end
 

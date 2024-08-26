@@ -50,12 +50,16 @@ _get_possible(sampler::SpeciesInteractionSampler{R,P}, λ) where {R<:RangeGenera
 end
 
 function sample(sampler::SpeciesInteractionSampler{R,S}) where {R,S}
-    λ = generate(sampler._feasibility_model)
-    abd = generate(sampler._abundance_model, λ)
-    δ = detectability(sampler._detection_model, λ, abd)
-    γ = _get_possible(sampler, λ)
-    θ = realizable(sampler._realization_model, γ, abd)
-    ζ = realize(θ)
-    D = detect(ζ, δ)
-    return Sample(λ, D)
+    net = generate(sampler._feasibility_model)
+ 
+    λ = Metaweb(Feasible, net.species, Global(net.scale.network), copy(net.metaweb))
+
+    abd = generate(sampler._abundance_model, net)
+    δ = detectability(sampler._detection_model, net, abd)
+
+    poss = _get_possible(sampler, net)
+    realizable!(sampler._realization_model, poss, abd)
+    realize!(poss)
+    detect!(poss, δ)
+    return Sample(λ, poss)
 end

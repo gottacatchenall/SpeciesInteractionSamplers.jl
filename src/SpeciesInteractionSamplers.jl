@@ -17,17 +17,18 @@ using Term
 using TestItems
 using UnicodePlots
 
+using SparseArrays
 import SpeciesInteractionNetworks
 
 export generate
 export possible
-export realizable
-export realize
+export realizable!
+export realize!
 export detectability
-export detect
+export detect!
 
 export GenerationModel
-export NetworkGenerator
+export MetawebGenerator
 export NicheModel, StochasticBlockModel
 export AbundanceGenerator
 export TrophicScaling, NormalizedLogNormal
@@ -40,6 +41,7 @@ export AutocorrelatedRange
 
 export RealizationModel
 export NeutrallyForbiddenLinks
+export DirichletPreference, DirichletPrior, IDDPseudocounts
 
 export DetectionModel
 export RelativeAbundanceScaled
@@ -50,7 +52,7 @@ export Scale
 export Global, Spatial, Temporal, Spatiotemporal
 
 export SpeciesPool
-export Network
+export Metaweb
 export Range
 export Phenology
 export Occurrence
