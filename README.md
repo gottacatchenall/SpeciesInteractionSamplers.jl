@@ -21,15 +21,15 @@ The documentation can be found [here](https://gottacatchenall.github.io/SpeciesI
 ```julia
 using SpeciesInteractionSamplers
 
-feasible_network = generate(NicheModel())
+λ = generate(NicheModel())
 relative_abundance = generate(NormalizedLogNormal(σ=0.2), λ)
+δ = detectability(λ, RelativeAbundanceScaled(10.0), relative_abundance)
 
 energy = 500
-realization_rate = realizable(feasible_network, NeutrallyForbiddenLinks(energy), relative_abundance)
-realized_network = realize(θ)
+θ = realizable!(feasible_network, NeutrallyForbiddenLinks(energy), relative_abundance)
+ζ = realize!(θ)
 
-detectability_network = detectability(λ, RelativeAbundanceScaled(10.0), relative_abundance)
-detected_network = detect(ζ, δ)
+detected_network = detect!(ζ, δ)
 ```
 
 # API Design
