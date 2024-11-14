@@ -26,7 +26,7 @@ relative_abundance = generate(NormalizedLogNormal(σ=0.2), λ)
 δ = detectability(RelativeAbundanceScaled(10.0), λ, relative_abundance)
 
 energy = 500
-θ = realizable!(feasible_network, NeutrallyForbiddenLinks(energy), relative_abundance)
+θ = realizable!(NeutrallyForbiddenLinks(energy), λ, relative_abundance)
 ζ = realize!(θ)
 
 detected_network = detect!(ζ, δ)
