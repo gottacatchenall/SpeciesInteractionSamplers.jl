@@ -5,13 +5,14 @@ A `Metaweb` represents a set of species and their interactions aggregated across
 
 A Metaweb is composed of a [`SpeciesPool`](@ref) and a set of interactions defined at a given [`Scale`](@ref).
 """
-mutable struct Metaweb{SC<:Scale,SP<:SpeciesPool,SIN<:SpeciesInteractionNetwork}
+mutable struct Metaweb{SC<:Scale,SP<:SpeciesPool,SIN<:SpeciesInteractionNetwork,P}
     state::Type{<:State}   # this is not a parametric type to ensure it can be mutated without causing conversion errors
     species::SP
     scale::SC
     metaweb::SIN
+    partiteness::P
     function Metaweb(st, sp, net, metaweb)
-        new{typeof(net),typeof(sp),typeof(metaweb)}(st, sp, net, metaweb)
+        new{typeof(net),typeof(sp),typeof(metaweb),typeof(metaweb.nodes)}(st, sp, net, metaweb, metaweb.nodes)
     end
 end
 
@@ -92,12 +93,13 @@ end
 
 
 Base.show(io::IO, net::Metaweb{ST,SP}) where {ST,SP} = begin
-    total_ints, sz = sum(adjacency(net.metaweb)), resolution(net)
+    _, sz = sum(adjacency(net.metaweb)), resolution(net)
     unique_ints = sum(adjacency(net.metaweb) .> 0)
-    details = """
-        - $unique_ints unique interactions, $(richness(net)) species  (density = $(unique_ints/(prod(sz))))
-        - $sz spatial resolution
-        - $(length(net)) timesteps
+    details = 
+    """
+    - $unique_ints unique interactions, $(richness(net)) species  (density = $(unique_ints/(prod(sz))))
+    - $sz spatial resolution
+    - $(length(net)) timesteps
     """
 
     if _interactive_repl()
@@ -109,12 +111,12 @@ Base.show(io::IO, net::Metaweb{ST,SP}) where {ST,SP} = begin
     end
 end
 
+_label(::Type{Feasible}) = "Number feasible interactions across domain"
 _label(::Type{Possible}) = "Number possible interactions across domain"
 _label(::Type{Realizable}) = "Total rate across domain"
 _label(::Type{Realized}) = "Number of realized interactions"
 _label(::Type{Detected}) = "Number of detected interactions"
 _label(::Type{Detectable}) = "Detection probability"
-
 
 function plot(net::Metaweb{ST,<:Global}; args...) where {ST}
     f = Figure()
@@ -124,7 +126,8 @@ function plot(net::Metaweb{ST,<:Global}; args...) where {ST}
     )
     hm = CairoMakie.heatmap!(
         ax,
-        adjacency(net),
+        adjacency(net)',
+        colormap=[:white, :black]
     )
     Colorbar(f[1, 2], hm, label=_label(ST))
     return f
@@ -132,7 +135,6 @@ end
 
 
 function plot(net::Metaweb{SC}; args...) where {SC<:Scale}
-
     f = Figure()
     ax = Axis(
         f[1, 1];
@@ -140,7 +142,8 @@ function plot(net::Metaweb{SC}; args...) where {SC<:Scale}
     )
     hm = CairoMakie.heatmap!(
         ax,
-        Matrix(adjacency(net.metaweb)),
+        Matrix(adjacency(net.metaweb))',
+        colormap=[:white, :black]
     )
     Colorbar(f[1, 2], hm, label=_label(net.state))
     return f
