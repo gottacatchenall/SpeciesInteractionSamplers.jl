@@ -1,3 +1,6 @@
+"""
+    Phenology
+"""
 struct Phenology{F}
     occurrence_timeseries::Vector{F}
 end
@@ -35,6 +38,9 @@ end
 #
 # ========================================
 
+"""
+    UniformPhenology
+"""
 Base.@kwdef struct UniformPhenology{I<:Integer} <: PhenologyGenerator
     timespan::I = 100
     minimum_length::I = 5
@@ -51,6 +57,9 @@ function generate(pg::UniformPhenology)
     Phenology(timeseries)
 end
 
+"""
+    PoissonPhenology
+"""
 Base.@kwdef struct PoissonPhenology{I,F} <: PhenologyGenerator
     timespan::I = 100
     mean_length::F = 20

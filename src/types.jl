@@ -85,7 +85,7 @@ abstract type Possible <: State end
 
 A `Realizable` network represents the possible interactions in a network, but is distinct from `Possible` networks because it contains the _rate of realization_ for each interaction.
 
-Realizable networks are created using the [`realizable`](@ref) method called on a [`Possible`](@ref) [`Metaweb`](@ref) and a [`RealizationModel`](@ref).
+Realizable networks are created using the [`realizable!`](@ref) method called on a [`Possible`](@ref) [`Metaweb`](@ref) and a [`RealizationModel`](@ref).
 """
 abstract type Realizable <: State end
 
@@ -101,7 +101,7 @@ abstract type Realized <: State end
 
 A `Detectable` network represents the probability that any [`Feasible`](@ref) interaction will successfully be detected if it occurs in the presence of an observed.
 
-`Detectable` networks are created using the [`detectable`](@ref) method called on a [`Feasible`](@ref) [`Metaweb`](@ref) and a [`DetectionModel`](@ref)
+`Detectable` networks are created using the [`detectability`](@ref) method called on a [`Feasible`](@ref) [`Metaweb`](@ref) and a [`DetectionModel`](@ref)
 """
 abstract type Detectable <: State end
 
@@ -110,7 +110,7 @@ abstract type Detectable <: State end
 
 A `Detected` network represents the discrete number of detected interactions between each pair of species at each place/time.
 
-`Detected` networks are created using the [`detect`](@ref) method called on a [`Realized`](@ref) [`Metaweb`](@ref) and a [`Detectable`](@ref) [`Metaweb`](@ref)
+`Detected` networks are created using the [`detect!`](@ref) method called on a [`Realized`](@ref) [`Metaweb`](@ref) and a [`Detectable`](@ref) [`Metaweb`](@ref)
 """
 abstract type Detected <: State end
 

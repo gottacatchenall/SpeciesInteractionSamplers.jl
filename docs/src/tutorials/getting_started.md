@@ -17,7 +17,7 @@ net = generate(NicheModel())
 
 Make it realizable, first by generating a relative abundance distribution
 
-```@example 1 
+```@ansi 1 
 relabd = generate(NormalizedLogNormal(), net)
 ```
 

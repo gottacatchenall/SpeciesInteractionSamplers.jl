@@ -28,6 +28,9 @@ function _nfl_rate_matrix!(localnet, relabd_mat, energy)
     end 
 end
 
+"""
+    realizable!
+"""
 function realizable!(
     nfl::NeutrallyForbiddenLinks,
     mw::M,
