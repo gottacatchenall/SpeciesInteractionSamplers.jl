@@ -29,7 +29,7 @@ makedocs(;
     warnonly=true,
 )
 
-deploydocs(;
+DocumenterVitepress.deploydocs(;
     repo="github.com/gottacatchenall/SpeciesInteractionSamplers.jl",
     push_preview=true,
 )
