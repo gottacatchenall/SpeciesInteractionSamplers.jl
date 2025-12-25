@@ -1,94 +1,59 @@
 module SpeciesInteractionSamplers
-
-INTERACTIVE_REPL = true
-_interactive_repl() = INTERACTIVE_REPL
-
-_DEFAULT_SPECIES_RICHNESS = 30
-_DEFAULT_NUM_TIMESTEPS = 100
-_DEFAULT_SPATIAL_RESOLUTION = (50, 50)
-
-using CairoMakie
-using Distributions
-using NeutralLandscapes
-using LinearAlgebra
-using Random
-using SpeciesInteractionNetworks: SpeciesInteractionNetwork, interactions, Unipartite, Binary, Quantitative, subgraph, simplify
-using Term
-using TestItems
-using UnicodePlots
-
-using SparseArrays
-import SpeciesInteractionNetworks
-
-export generate
-export possible
-export realizable!
-export realize!
-export detectability
-export detect!
-
-export GenerationModel
-export MetawebGenerator
-export NicheModel, StochasticBlockModel
-export AbundanceGenerator
-export TrophicScaling, NormalizedLogNormal
-
-export PhenologyGenerator
-export UniformPhenology, PoissonPhenology
-
-export RangeGenerator
-export AutocorrelatedRange
-
-export RealizationModel
-export NeutrallyForbiddenLinks
-export DirichletPreference, DirichletPrior, IDDPseudocounts
-
-export DetectionModel
-export RelativeAbundanceScaled
-export State
-export Feasible, Possible, Realizable, Realized, Detectable, Detected
-
-export Scale
-export Global, Spatial, Temporal, Spatiotemporal
-
-export SpeciesPool
-export Metaweb
-export Range
-export Phenology
-export Occurrence
-
-export occurrence
-
-export Abundance
-export AbundanceTrait
-export RelativeAbundance, Density, Count
-
-export sample
-export falsenegativerate
-export SpeciesInteractionSampler, Sample
-# Network utils
-export mirror
-export scale
-export species, richness, adjacency, numspecies
-export resolution
-
-export plot
-
-include("types.jl")
-include("scale.jl")
-include("species.jl")
-include("network.jl")
-include("abundance.jl")
-include("range.jl")
-include("phenology.jl")
-include("occupancy.jl")
+    using Combinatorics
+    using Distributions
+    using DimensionalData
+    using NeutralLandscapes
+    using Random
+    
+    import SpeciesInteractionNetworks as SINs
 
 
-include("map.jl")
-include("possible.jl")
-include("realizable.jl")
-include("realize.jl")
-include("detect.jl")
+    include("types.jl")
 
-include("samplers.jl")
+    include(joinpath("species", "partition.jl"))
+    include(joinpath("species", "unipartite.jl"))
+    include(joinpath("species", "multipartite.jl"))
+
+
+    include(joinpath("context", "traits.jl"))
+    include(joinpath("context", "ranges.jl"))
+    include(joinpath("context", "phenologies.jl"))
+    include(joinpath("context", "abundances.jl"))
+    include(joinpath("context", "context.jl"))
+
+    include("network.jl")
+
+
+    include(joinpath("generators", "network.jl"))
+    include(joinpath("generators", "range.jl"))
+    include(joinpath("generators", "phenology.jl"))
+    include(joinpath("generators", "abundance.jl"))
+
+    include(joinpath("filters", "abundance_rates.jl"))
+    include(joinpath("filters", "detection.jl"))
+    include(joinpath("filters", "potential.jl"))
+    include(joinpath("filters", "realization.jl"))
+
+    include("pipeline.jl")
+
+    # ============================================================================
+    # Exports
+    # ============================================================================
+    export NetworkLayer, SpatiotemporalContext
+    export Feasible, Potential, Realized, Detected
+    export Ranges, Phenologies, Abundances
+    export UnipartiteSpeciesPool, MultipartiteSpeciesPool, SpeciesPartition
+    export getpartition, getpartitions, getpartitionnames, add_partition!, numpartitions
+
+    export AbundanceGenerator, LogNormalAbundance, PoissonAbundance, NegativeBinomialAbundance, DistributionBasedAbundance, PowerLawAbundance
+    export NetworkGenerator, NicheModel, ConfigurationModel, ErdosRenyi
+    export RangeGenerator, AutocorrelatedRange
+    export PhenologyGenerator, PoissonPhenology, UniformPhenology, GaussianMixturePhenology
+    export RealizationModel, MassActionRealization, NeutrallyForbiddenLinks
+    export DetectabilityModel, BinomialDetection, PerfectDetection
+
+    export generate, possibility, realize, detect, sample_network
+    export numspecies, getspecies, getspeciesaxis
+
+
 end
