@@ -1,7 +1,7 @@
 # Make sure we work from the version in the repo
 sis_path = dirname(dirname(Base.current_project()))
 push!(LOAD_PATH, sis_path)
-using SpeciesInteractionNetworks
+using SpeciesInteractionSamplers
 
 # Load the rest of the build environment
 using Literate
