@@ -15,9 +15,6 @@ makedocs(;
         "Home" => "index.md",
         "Tutorials" => [
             "Getting Started" => joinpath("tutorials", "getting_started.md"),
-            "Model Customization" => [
-                "Custom Network Generator" => joinpath("tutorials", "custom", "network_generator.md")
-            ]
         ],
         "Reference" => [
             #joinpath("reference", "internal.md"),
