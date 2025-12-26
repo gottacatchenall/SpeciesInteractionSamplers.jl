@@ -2,8 +2,6 @@ using Documenter, DocumenterVitepress
 
 using SpeciesInteractionSamplers
 
-SpeciesInteractionSamplers.INTERACTIVE_REPL = false
-
 makedocs(;
     modules=[SpeciesInteractionSamplers],
     authors="Michael D. Catchen",

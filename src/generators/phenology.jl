@@ -46,7 +46,7 @@ end
 """
     generate(generator::PhenologyGenerator, n_species::Int, n_times::Int; kwargs...)
 
-Generate species phenology patterns.
+Generate species phenologies.
 """
 function generate(gen::PoissonPhenology, n_times::Int; kwargs...)
     phenology = zeros(Bool, n_times)  # Placeholder
