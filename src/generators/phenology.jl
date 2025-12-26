@@ -39,6 +39,9 @@ end
 #
 # ====================================================================================
 
+""" 
+    PoissonPhenology
+"""
 struct PoissonPhenology <: PhenologyGenerator
     mean
 end

@@ -21,7 +21,7 @@ abstract type NetworkGenerator <: GenerativeModel end
 """
     PhenologyGenerator
 
-A supertype for all methods used to generate [`Phenology`](@ref)s. 
+A supertype for all methods used to generate [`Phenologies`](@ref)s. 
 
 Currently, the concrete instances of PhenologyGenerator are:
 
@@ -34,7 +34,7 @@ abstract type PhenologyGenerator <: GenerativeModel end
 """
     abstract type RangeGenerator end 
 
-A supertype for all methods used to generate [`Range`](@ref)s. 
+A supertype for all methods used to generate [`Ranges`](@ref)s. 
 
 Currently, the concrete instances of `RangeGenerator` are:
 
@@ -46,7 +46,7 @@ abstract type RangeGenerator <: GenerativeModel end
 """
     AbundanceGenerator
 
-A supertype for all method used to generate [`Abundances`](@ref) distributions across a set of species in a [`SpeciesPool`](@ref)
+A supertype for all method used to generate [`Abundances`](@ref) distributions across a set of species in a [`AbstractSpeciesPool`](@ref)
 """
 abstract type AbundanceGenerator <: GenerativeModel end
 

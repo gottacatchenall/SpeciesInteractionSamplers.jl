@@ -68,7 +68,7 @@ end
 """
     generate(ar::AutocorrelatedRange)
 
-Generates a [`Range`](@ref) using the [`AutocorrelatedRange`](@ref) [`RangeGenerator`](@ref).
+Generates [`Ranges`](@ref) using the [`AutocorrelatedRange`](@ref) [`RangeGenerator`](@ref).
 """
 function generate(ar::AutocorrelatedRange, dims)
     H = ar.autocorrelation
