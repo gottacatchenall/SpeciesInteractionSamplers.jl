@@ -17,7 +17,7 @@ makedocs(;
             "Getting Started" => joinpath("tutorials", "getting_started.md"),
         ],
         "Case Studies" => [
-            "Abundance Combination Mode" => joinpath("tutorials", "abundancemode.md"),
+            "Abundance Combination Mode" => joinpath("casestudies", "abundancemode.md"),
         ],
         "Reference" => [
             #joinpath("reference", "internal.md"),
