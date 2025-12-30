@@ -9,8 +9,8 @@ pool = UnipartiteSpeciesPool(40)
 metaweb = generate(NicheModel(0.1), pool)
 abundances = generate(LogNormalAbundance(), pool)
 
-Es = 0:200:25000
-num_reps = 250
+Es = 0:100:25000
+num_reps = 500
 
 results = DataFrame(
     total_detected = [],
