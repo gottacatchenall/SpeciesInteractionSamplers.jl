@@ -21,8 +21,7 @@ Base.size(layer::NetworkLayer) = size(layer.data)
 getspecies(layer::NetworkLayer) = layer.species
 numspecies(layer::NetworkLayer) = numspecies(getspecies(layer)) 
 
-getnetworksize(layer::NetworkLayer{ST,<:MultipartiteSpeciesPool}) where ST = size(layer)[1:numpartitions(layer.species)]
-getnetworksize(layer::NetworkLayer{ST,<:UnipartiteSpeciesPool}) where ST = size(layer)[1:2]
+getnetworksize(layer::NetworkLayer) = size(layer)[1:2]
 
 
 function Base.show(io::IO, layer::NetworkLayer{Feasible}) 

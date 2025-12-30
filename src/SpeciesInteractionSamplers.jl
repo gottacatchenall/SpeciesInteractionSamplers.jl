@@ -42,7 +42,7 @@ module SpeciesInteractionSamplers
     export NetworkLayer, SpatiotemporalContext
     export Feasible, Potential, Realized, Detected
     export Ranges, Phenologies, Abundances
-    export UnipartiteSpeciesPool, MultipartiteSpeciesPool, SpeciesPartition
+    export UnipartiteSpeciesPool, BipartiteSpeciesPool, SpeciesPartition
     export getpartition, getpartitions, getpartitionnames, add_partition!, numpartitions
 
     export AbundanceGenerator, LogNormalAbundance, PoissonAbundance, NegativeBinomialAbundance, DistributionBasedAbundance, PowerLawAbundance
@@ -50,7 +50,12 @@ module SpeciesInteractionSamplers
     export RangeGenerator, AutocorrelatedRange
     export PhenologyGenerator, PoissonPhenology, UniformPhenology, GaussianMixturePhenology
     export RealizationModel, MassActionRealization, NeutrallyForbiddenLinks
-    export DetectabilityModel, BinomialDetection, PerfectDetection
+    export DetectabilityModel, BinomialDetection, AbundanceScaledDetection, PerfectDetection
+
+    export AbstractDetectabilityRule, LinearDetectablity, ExponentialDetectability
+
+    export AbundanceSum, AbundanceProduct, AbundanceGeometricMean, AbundanceMin, AbundanceMax, AbundanceMean, CustomAbundanceRule
+    export DetectionCombinationMode, DetectabilitySum, DetectabilityProduct, DetectabilityMean, DetectabilityMin, DetectabilityMax, DetectabilityGeometricMean, CustomDetectabilityRule
 
     export generate, possibility, realize, detect, sample_network
     export numspecies, getspecies, getspeciesaxis

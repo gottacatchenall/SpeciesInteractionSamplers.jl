@@ -19,7 +19,7 @@ end
 
 function generate(
     phenology_generator::PhenologyGenerator,
-    pool::MultipartiteSpeciesPool,
+    pool::BipartiteSpeciesPool,
     n_times::Int;
     kwargs...
 )

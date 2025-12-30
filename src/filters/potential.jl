@@ -14,17 +14,17 @@ _get_possibility(
 ) =  @d metaweb.data .* context.phenologies.data.data
 
 _get_possibility(
-    metaweb::NetworkLayer{Feasible,MultipartiteSpeciesPool},
+    metaweb::NetworkLayer{Feasible,BipartiteSpeciesPool},
     context::SpatiotemporalContext{<:Ranges,<:Phenologies}
 ) = broadcast_dims(*, metaweb.data, values(context.ranges.data.dict)..., values(context.phenologies.data.dict)...)
 
 _get_possibility(
-    metaweb::NetworkLayer{Feasible,MultipartiteSpeciesPool},
+    metaweb::NetworkLayer{Feasible,BipartiteSpeciesPool},
     context::SpatiotemporalContext{<:Ranges,Missing}
 ) = broadcast_dims(*, metaweb.data, values(context.ranges.data.dict)...)
 
 _get_possibility(
-    metaweb::NetworkLayer{Feasible,MultipartiteSpeciesPool},
+    metaweb::NetworkLayer{Feasible,BipartiteSpeciesPool},
     context::SpatiotemporalContext{Missing,<:Phenologies}
 ) = broadcast_dims(*, metaweb.data, values(context.phenologies.data.dict)...)
 

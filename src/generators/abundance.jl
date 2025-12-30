@@ -14,7 +14,7 @@ end
 
 function generate(
     gen::AbundanceGenerator,
-    pool::MultipartiteSpeciesPool;
+    pool::BipartiteSpeciesPool;
 )
     abds = Dict{Symbol,DimArray}()
     for (partition_name, partition) in getpartitions(pool)

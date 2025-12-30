@@ -40,7 +40,7 @@ end
 
 function generate(
     gen::ErdosRenyi,
-    pool::MultipartiteSpeciesPool; 
+    pool::BipartiteSpeciesPool; 
 )
     
     part_names = getpartitionnames(pool)

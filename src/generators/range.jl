@@ -34,7 +34,7 @@ end
 
 function generate(
     range_generator::RangeGenerator,
-    pool::MultipartiteSpeciesPool,
+    pool::BipartiteSpeciesPool,
     dims;
     kwargs...
 )
