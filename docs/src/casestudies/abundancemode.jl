@@ -6,7 +6,7 @@ using Statistics
 using CairoMakie
 
 pool = UnipartiteSpeciesPool(40)
-metaweb = generate(NicheModel(0.1), pool)
+metaweb = generate(NicheModel(0.15), pool)
 abundances = generate(LogNormalAbundance(), pool)
 
 Es = 0:100:25000
@@ -20,7 +20,7 @@ results = DataFrame(
 )
 
 realization_modes = [AbundanceMin(), AbundanceMean(), AbundanceMax(), AbundanceProduct()]
-detection_modes = [DetectabilityMin(), DetectabilityMean(), DetectabilityMax(), DetectabilityProduct()]
+#detection_modes = [DetectabilityMin(), DetectabilityMean(), DetectabilityMax(), DetectabilityProduct()]
 
 for r in 1:num_reps
     for (i,mode) in enumerate(realization_modes)
@@ -85,3 +85,5 @@ axislegend(
 
 f
 
+
+save("case1.png", f)
