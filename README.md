@@ -1,39 +1,39 @@
 # SpeciesInteractionSamplers.jl
 
-[![DOC](https://img.shields.io/badge/Documentation-blue?style=flat-square)](https://gottacatchenall.github.io/SpeciesInteractionSamplers.jl)
+A Julia package for simulating the sampling of species interaction networks with spatiotemporal variation.
 
-`SpeciesInteractionSamplers.jl` is a Julia package for simulating the process of
-sampling species interaction networks with spatiotemporal variation in species
-occurrence. It is built on `SpeciesInteractionNetworks.jl`, and uses
-`NeutralLandscapes.jl` and `Distributions.jl` to generate species ranges and
-phenologies that have prescribed statistical properties. This software is associated with the second preprinted version of _Catchen et
-al. 2023_. 
+![](./docs/src/concept.png)
 
-`SpeciesInteractionNetworks.jl` makes use of `UnicodePlots.jl` to
-make the REPL experience more interactive. If you would like to turn this off,
-either to remove the slight added latency, or because you hate fun, you can set
-the variable `SpeciesInteractionNetworks.INTERACTIVE_REPL = false`.
+## Overview
 
-The documentation can be found [here](https://gottacatchenall.github.io/SpeciesInteractionSamplers.jl)
+Species interaction networks are sampled imperfectly. The species and interactions we observe depend on where and when we sample, how abundant species are, and how detectable interactions are. **SpeciesInteractionSamplers.jl** provides a simulation framework for modeling this sampling process.
 
-# A Sampled Interaction Network from Scratch in 7 Lines
+The package implements a four-stage pipeline that mirrors how field sampling works:
+
+## Quick Start
+
+```julia
+using Pkg
+Pkg.add("SpeciesInteractionSamplers")
+```
+
+```@setup 1
+using SpeciesInteractionSamplers
+```
 
 ```julia
 using SpeciesInteractionSamplers
 
-λ = generate(NicheModel())
-relative_abundance = generate(NormalizedLogNormal(σ=0.2), λ)
-δ = detectability(RelativeAbundanceScaled(10.0), λ, relative_abundance)
+# 1. Define a species pool and generate a metaweb
+pool = UnipartiteSpeciesPool(30)
+metaweb = generate(NicheModel(0.15), pool)
 
-energy = 500
-θ = realizable!(NeutrallyForbiddenLinks(energy), λ, relative_abundance)
-ζ = realize!(θ)
+# 2. Generate species abundances
+abundances = generate(LogNormalAbundance(), pool)
 
-detected_network = detect!(ζ, δ)
+# 3. Realize interactions (abundance-dependent encounter)
+realized = realize(metaweb, MassActionRealization(abundances; energy=500))
+
+# 4. Detect interactions (imperfect observation)
+detected = detect(realized, AbundanceScaledDetection(abundances))
 ```
-
-# API Design
-
-A thorough description of the `SpeciesInteractionSamplers.jl` API can be found in the documentation. A diagram conveying the essentials can be seen below.
-
-![](https://github.com/gottacatchenall/SpeciesInteractionSamplers.jl/blob/main/docs/src/design.png)
