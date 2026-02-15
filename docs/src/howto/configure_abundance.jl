@@ -99,8 +99,8 @@ println("Unique interactions (uneven abundances): $(sum(realized_uneven.data .> 
 
 # Detection is also affected by abundance:
 
-detected_even = detect(realized_even, AbundanceScaledDetection(lognormal_even, scaling_mode = ExponentialDetectability(DEFAULT_DETECTABILITY)))
-detected_uneven = detect(realized_uneven, AbundanceScaledDetection(lognormal_uneven, scaling_mode = ExponentialDetectability(100.)))
+detected_even = detect(realized_even, AbundanceScaledDetection(lognormal_even, scaling_mode = ExponentialDetectability(50.)))
+detected_uneven = detect(realized_uneven, AbundanceScaledDetection(lognormal_uneven, scaling_mode = ExponentialDetectability(50.)))
 
 completeness_even = sum(detected_even.data .> 0) / sum(metaweb.data)
 completeness_uneven = sum(detected_uneven.data .> 0) / sum(metaweb.data)
