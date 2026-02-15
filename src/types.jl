@@ -14,7 +14,6 @@ Currently, the concrete instances of `NetworkGenerator` are:
 
 - [`NicheModel`](@ref)
 - [`ErdosRenyi`](@ref)
-- [`StochasticBlockModel`](@ref)
 """
 abstract type NetworkGenerator <: GenerativeModel end
 

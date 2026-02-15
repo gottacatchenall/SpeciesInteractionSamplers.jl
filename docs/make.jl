@@ -19,10 +19,10 @@ makedocs(;
             "Spatiotemporal Sampling" => joinpath("tutorials", "spatiotemporal_sampling.md"),
         ],
         "How-To Guides" => [
-            "Generating Networks" => joinpath("howto", "generating_networks.md"),
+            "Generating Networks" => joinpath("howto", "generate_networks.md"),
             "Spatial Networks" => joinpath("howto", "ranges.md"),
             "Temporal Networks" => joinpath("howto", "phenologies.md"),
-            "Configuring Abundances" => joinpath("howto", "configuring_abundances.md"),
+            "Configuring Abundances" => joinpath("howto", "configure_abundance.md"),
             "Realization Models" => joinpath("howto", "realization_models.md"),
             "Detection Models" => joinpath("howto", "detection_models.md"),
         ],
