@@ -127,6 +127,9 @@ ax = Axis(fig3[1,1],
 heatmap!(ax, Matrix(parent(phenologies))[:, :]', colormap=[:white, :steelblue])
 fig3 #hide
 
+# Now we'll combine species ranges and phenologies
+#
+
 # ## Full Spatiotemporal Context
 
 # Combine ranges and phenologies:
@@ -142,43 +145,10 @@ potential_st = possibility(metaweb, full_context)
 println("Spatiotemporal network dimensions: $(size(potential_st.data))")
 println("Dimensions: species × species × x × y × time")
 
-# ## Sampling Through Time
-
-# Let's simulate sampling over the full time period:
+# and we can simulate sampling
 
 realized_st = realize(potential_st, MassActionRealization(abundances; energy=500))
 detected_st = detect(realized_st, AbundanceScaledDetection(abundances))
-
-# Aggregate across all space and time:
-
-total_detected = dropdims(sum(detected_st.data, dims=(3,4,5)), dims=(3,4,5))
-unique_total = sum(total_detected .> 0)
-
-println("Unique interactions detected: $unique_total")
-println("Completeness: $(round(unique_total / sum(metaweb.data) * 100, digits=1))%")
-
-# ## Accumulation Through Time
-
-# Let's track how the detected network accumulates over time:
-
-cumulative_detected = zeros(Bool, size(metaweb.data)..., n_timesteps)
-completeness_over_time = Float64[]
-
-for t in 1:n_timesteps
-    detected_up_to_t = dropdims(sum(detected_st.data[:, :, :, :, 1:t], dims=(3,4,5)), dims=(3,4,5))
-    cumulative_detected[:, :, t] .= detected_up_to_t .> 0
-    unique_at_t = sum(cumulative_detected[:, :, t])
-    push!(completeness_over_time, unique_at_t / sum(metaweb.data))
-end
-
-# fig-accumulation
-fig4 = Figure()
-ax = Axis(fig4[1,1],
-    xlabel="Time (weeks)",
-    ylabel="Cumulative Completeness",
-    title="Interaction Accumulation Curve")
-lines!(ax, 1:n_timesteps, completeness_over_time, linewidth=2)
-fig4 #hide
 
 # ## Different Phenology Generators
 
@@ -203,6 +173,8 @@ heatmap!(ax2, Matrix(parent(phens_uniform))', colormap=:viridis)
 ax3 = Axis(fig5[2,1:2], title="Gaussian Mixture Phenology", xlabel="Time", ylabel="Species")
 heatmap!(ax3, Matrix(parent(phens_gaussian))', colormap=:viridis)
 fig5 #hide
+
+# 
 
 # ## Customizing Range Properties
 
