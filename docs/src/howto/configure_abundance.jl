@@ -35,7 +35,7 @@ ax2 = Axis(fig_lognorm[1,2], title="Default (σ=1.0)", xlabel="Species rank", yl
 barplot!(ax2, sort(collect(collect(parent(lognormal_default))), rev=true))
 ax3 = Axis(fig_lognorm[1,3], title="Uneven (σ=2.0)", xlabel="Species rank", ylabel="Relative abundance")
 barplot!(ax3, sort(collect(collect(parent(lognormal_uneven))), rev=true))
-fig_lognorm #hide     
+fig_lognorm #hide
 
 # ## Using PowerLawAbundance
 
