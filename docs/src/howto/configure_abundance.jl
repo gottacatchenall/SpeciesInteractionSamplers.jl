@@ -37,7 +37,7 @@ ax3 = Axis(fig_lognorm[1,3], title="Uneven (σ=2.0)", xlabel="Species rank", yla
 barplot!(ax3, sort(collect(collect(parent(lognormal_uneven))), rev=true))
 fig_lognorm #hide
 
-# ## Using PowerLawAbundance
+# ## Using Custom Distributions
 
 # Creates rank-abundance distributions following a power law. Note this is deterministic.
 
@@ -56,7 +56,6 @@ ax = Axis(fig_powerlaw[1,1], xlabel="Species rank", ylabel="Relative abundance",
 barplot!(ax, 1:numspecies(pool), sort(collect(parent(power_default)), rev=true),
     color=:steelblue, label="exponent=1.0")
 fig_powerlaw #hide
-
 
 # ## Using Custom Distributions
 

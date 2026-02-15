@@ -1,5 +1,8 @@
 # SpeciesInteractionSamplers.jl
 
+[![DOC](https://img.shields.io/badge/Documentation-blue?style=flat-square)](https://gottacatchenall.github.io/SpeciesInteractionSamplers.jl)
+
+
 A Julia package for simulating the sampling of species interaction networks with spatiotemporal variation.
 
 ![](./docs/src/concept.png)
