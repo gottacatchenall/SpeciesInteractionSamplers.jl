@@ -1,6 +1,6 @@
 name = "SpeciesInteractionSamplers"
 uuid = "52128aff-513d-4647-bfdb-f540a36539f5"
-version = "0.0.1"
+version = "1.0"
 authors = ["michael d. catchen <mdcatchen@gmail.com>"]
 
 [deps]

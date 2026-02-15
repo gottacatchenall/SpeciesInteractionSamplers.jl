@@ -81,15 +81,14 @@ fig = Figure(size=(800, 300))
 ax1 = Axis(fig[1,1], title="Feasible", aspect=1,
     xlabel="Species", ylabel="Species")
 heatmap!(ax1, SpeciesInteractionSamplers.interactions(metaweb) .> 0, colormap=[:white, :black])
-
 ax2 = Axis(fig[1,2], title="Realized", aspect=1,
     xlabel="Species", ylabel="Species")
 heatmap!(ax2, SpeciesInteractionSamplers.interactions(realized) .> 0, colormap=[:white, :steelblue])
-
 ax3 = Axis(fig[1,3], title="Detected", aspect=1,
     xlabel="Species", ylabel="Species")
 heatmap!(ax3, SpeciesInteractionSamplers.interactions(detected) .> 0, colormap=[:white, :forestgreen])
 fig #hide
+
 
 # ## Calculating Sampling Completeness
 
