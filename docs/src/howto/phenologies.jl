@@ -45,6 +45,8 @@ ax2 = Axis(fig[1,2], title="Long Phenologies (μ=20)", xlabel="Time", ylabel="Sp
 heatmap!(ax2, Matrix(parent(long_phens))', colormap=[:white, :steelblue])
 fig #hide
 
+#
+
 # ## Using GaussianMixturePhenology
 
 # Creates continuous activity patterns with multiple peaks - useful for species that have varying activity levels rather than binary presence/absence.

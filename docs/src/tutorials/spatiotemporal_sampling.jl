@@ -174,7 +174,8 @@ ax3 = Axis(fig5[2,1:2], title="Gaussian Mixture Phenology", xlabel="Time", ylabe
 heatmap!(ax3, Matrix(parent(phens_gaussian))', colormap=:viridis)
 fig5 #hide
 
-# 
+# Now let's discuss adjusting range generators 
+#
 
 # ## Customizing Range Properties
 
