@@ -85,6 +85,10 @@ hm = heatmap!(ax, potential_per_location, colormap=:viridis)
 Colorbar(fig2[1,2], hm, label="Number of potential interactions")
 fig2 #hide
 
+# Now we'll move to realization of interactions in space.
+# 
+
+
 # ## Realizing and Detecting with Spatial Structure
 
 # Generate abundances and run through the full pipeline:
