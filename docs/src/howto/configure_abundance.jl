@@ -39,26 +39,6 @@ fig_lognorm #hide
 
 # ## Using Custom Distributions
 
-# Creates rank-abundance distributions following a power law. Note this is deterministic.
-
-# Default exponent:
-power_default = generate(PowerLawAbundance(), pool)
-
-# Steeper decline (higher exponent = more uneven):
-power_steep = generate(PowerLawAbundance(exponent=2.0), pool)
-
-# Visualize:
-
-# fig-powerlaw
-fig_powerlaw = Figure(size=(500, 300))
-ax = Axis(fig_powerlaw[1,1], xlabel="Species rank", ylabel="Relative abundance",
-    title="Power Law Abundance")
-barplot!(ax, 1:numspecies(pool), sort(collect(parent(power_default)), rev=true),
-    color=:steelblue, label="exponent=1.0")
-fig_powerlaw #hide
-
-# ## Using Custom Distributions
-
 # `DistributionBasedAbundance` lets you use any distribution from Distributions.jl:
 
 # Uniform abundance (all species equal):
