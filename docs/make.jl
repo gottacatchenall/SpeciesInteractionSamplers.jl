@@ -15,13 +15,20 @@ makedocs(;
         "Home" => "index.md",
         "Tutorials" => [
             "Getting Started" => joinpath("tutorials", "getting_started.md"),
+            "Bipartite Networks" => joinpath("tutorials", "bipartite_networks.md"),
+            "Spatiotemporal Sampling" => joinpath("tutorials", "spatiotemporal_sampling.md"),
         ],
-        "Case Studies" => [
-            "Abundance Combination Mode" => joinpath("casestudies", "abundancemode.md"),
+        "How-To Guides" => [
+            "Generating Networks" => joinpath("howto", "generating_networks.md"),
+            "Spatial Networks" => joinpath("howto", "ranges.md"),
+            "Temporal Networks" => joinpath("howto", "phenologies.md"),
+            "Configuring Abundances" => joinpath("howto", "configuring_abundances.md"),
+            "Realization Models" => joinpath("howto", "realization_models.md"),
+            "Detection Models" => joinpath("howto", "detection_models.md"),
         ],
         "Reference" => [
-            #joinpath("reference", "internal.md"),
-            joinpath("reference", "public.md")
+            "Public API" => joinpath("reference", "public.md"),
+            "Internal API" => joinpath("reference", "internal.md"),
         ],
     ],
     warnonly=true,
@@ -31,5 +38,3 @@ DocumenterVitepress.deploydocs(;
     repo="github.com/gottacatchenall/SpeciesInteractionSamplers.jl",
     push_preview=true,
 )
-
-
