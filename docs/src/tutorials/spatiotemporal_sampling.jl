@@ -52,7 +52,8 @@ for (i, sp_idx) in enumerate([1, 5, 10])
 end
 fig #hide
 
-# Now we'll integrate them into the smapling pipeline.
+# 
+# Now we'll integrate them into the sampling pipeline.
 
 # ## Creating a Spatial Context
 
