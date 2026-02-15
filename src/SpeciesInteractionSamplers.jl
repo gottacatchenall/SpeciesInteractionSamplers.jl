@@ -3,8 +3,10 @@ module SpeciesInteractionSamplers
     using Distributions
     using DimensionalData
     using NeutralLandscapes
+    using StatsBase
     using Random
-    
+    using TestItems
+
     import SpeciesInteractionNetworks as SINs
 
 
@@ -32,6 +34,7 @@ module SpeciesInteractionSamplers
     include(joinpath("filters", "abundance_rates.jl"))
     include(joinpath("filters", "detection.jl"))
     include(joinpath("filters", "potential.jl"))
+    include(joinpath("filters", "trait_kernels.jl"))
     include(joinpath("filters", "realization.jl"))
 
     include("pipeline.jl")
@@ -49,7 +52,9 @@ module SpeciesInteractionSamplers
     export NetworkGenerator, NicheModel, ConfigurationModel, ErdosRenyi
     export RangeGenerator, AutocorrelatedRange
     export PhenologyGenerator, PoissonPhenology, UniformPhenology, GaussianMixturePhenology
-    export RealizationModel, MassActionRealization, NeutrallyForbiddenLinks
+    export RealizationModel, MassActionRealization, NeutrallyForbiddenLinks, TraitMatchingRealization, TraitAbundanceRealization, HomogeneousRealization, CustomRateRealization
+    export TraitKernel, GaussianKernel, ExponentialKernel
+    export InteractionTraits
     export DetectabilityModel, BinomialDetection, AbundanceScaledDetection, PerfectDetection
 
     export AbstractDetectabilityRule, LinearDetectablity, ExponentialDetectability
@@ -58,6 +63,7 @@ module SpeciesInteractionSamplers
     export DetectionCombinationMode, DetectabilitySum, DetectabilityProduct, DetectabilityMean, DetectabilityMin, DetectabilityMax, DetectabilityGeometricMean, CustomDetectabilityRule
 
     export generate, possibility, realize, detect, sample_network
+    export interactions
     export numspecies, getspecies, getspeciesaxis
 
 

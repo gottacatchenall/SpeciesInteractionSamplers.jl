@@ -23,11 +23,33 @@ numspecies(layer::NetworkLayer) = numspecies(getspecies(layer))
 
 getnetworksize(layer::NetworkLayer) = size(layer)[1:2]
 
+"""
+    interactions(layer::NetworkLayer)
+
+Return the raw interaction array from a `NetworkLayer`, suitable for plotting
+or direct array operations.
+"""
+interactions(layer::NetworkLayer) = parent(layer.data)
+
 
 function Base.show(io::IO, layer::NetworkLayer{Feasible}) 
     print(io, "Feasible network with $(numspecies(layer)) species and $(sum(layer.data)) interactions")
 end 
 
-function Base.show(io::IO, layer::NetworkLayer{S}) where {S} 
+function Base.show(io::IO, layer::NetworkLayer{S}) where {S}
     print(io, "$S network with $(numspecies(layer)) species and $(sum(layer.data)) total interactions")
-end 
+end
+
+@testitem "NetworkLayer operations" begin
+    import SpeciesInteractionSamplers as SIS
+
+    pool = UnipartiteSpeciesPool(5)
+    layer = generate(ErdosRenyi(0.5), pool)
+
+    @test layer isa NetworkLayer{Feasible}
+    @test layer.state isa Feasible
+    @test size(layer) == (5, 5)
+    @test getspecies(layer) === pool
+    @test numspecies(layer) == 5
+    @test SIS.getnetworksize(layer) == (5, 5)
+end

@@ -12,7 +12,6 @@ function generate(
     range_generator::RangeGenerator,
     pool::UnipartiteSpeciesPool,
     dims;
-    dim_names = (:x, :y),
     kwargs...
 )
 
@@ -76,8 +75,39 @@ function generate(ar::AutocorrelatedRange, dims)
 
     range_mat = rand(DiamondSquare(H), dims)
 
-    range_mat[findall(x -> x < threshold, range_mat)] .= 0
-    range_mat[findall(!iszero, range_mat)] .= 1
+    range_mat = map(ecdf(vec(range_mat)), range_mat)
+
+    range_mat[findall(x -> x < threshold, range_mat)] .= 1
+    range_mat[findall(!isone, range_mat)] .= 0
     return Bool.(range_mat)
+end
+
+
+@testitem "Range generation for UnipartiteSpeciesPool" begin
+    import SpeciesInteractionSamplers as SIS
+
+    pool = UnipartiteSpeciesPool(4)
+    ar = AutocorrelatedRange()
+    ranges = generate(ar, pool, (16, 16))
+
+    @test ranges isa Ranges
+    @test numspecies(ranges) == 4
+    @test ranges.data isa SIS.UnipartiteTrait
+end
+
+@testitem "Range generation for BipartiteSpeciesPool" begin
+    import SpeciesInteractionSamplers as SIS
+
+    pool = BipartiteSpeciesPool(3, 2; partition_names=[:plants, :pollinators])
+    ar = AutocorrelatedRange()
+    ranges = generate(ar, pool, (16, 16))
+
+    @test ranges isa Ranges
+    @test numspecies(ranges) == 5
+    @test ranges.data isa SIS.PartitionedTrait
+    @test haskey(ranges, :plants)
+    @test haskey(ranges, :pollinators)
+    @test size(ranges[:plants], 1) == 3
+    @test size(ranges[:pollinators], 1) == 2
 end
 

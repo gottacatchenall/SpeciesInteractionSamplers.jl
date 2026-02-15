@@ -137,3 +137,53 @@ function Base.show(io::IO, pool::BipartiteSpeciesPool)
         print(io, "Empty SpeciesPool")
     end
 end
+
+@testitem "BipartiteSpeciesPool constructors" begin
+    # From counts with partition_names
+    pool = BipartiteSpeciesPool(5, 3; partition_names=[:plants, :pollinators])
+    @test numpartitions(pool) == 2
+    @test numspecies(pool) == 8
+    @test numspecies(pool, :plants) == 5
+    @test numspecies(pool, :pollinators) == 3
+
+    # From counts 
+    pool2 = BipartiteSpeciesPool(4, 6)
+    @test numpartitions(pool2) == 2
+    @test numspecies(pool2) == 10
+
+    # From tuple
+    pool3 = BipartiteSpeciesPool((3, 2); partition_names=[:a, :b])
+    @test numpartitions(pool3) == 2
+    @test numspecies(pool3) == 5
+
+    # From explicit species names
+    pool4 = BipartiteSpeciesPool([:oak, :pine], [:beetle, :ant, :bee]; names=[:trees, :insects])
+    @test numpartitions(pool4) == 2
+    @test numspecies(pool4, :trees) == 2
+    @test numspecies(pool4, :insects) == 3
+    @test getspecies(pool4, :trees) == [:oak, :pine]
+
+    # Empty constructor
+    pool5 = BipartiteSpeciesPool()
+    @test numpartitions(pool5) == 0
+    @test length(pool5) == 0
+end
+
+@testitem "BipartiteSpeciesPool partition management" begin
+    pool = BipartiteSpeciesPool(3, 2; partition_names=[:plants, :pollinators])
+
+    # getpartition
+    plants = getpartition(pool, :plants)
+    @test plants isa SpeciesPartition
+    @test length(plants) == 3
+
+    # getpartitions
+    parts = getpartitions(pool)
+    @test parts isa Dict
+    @test length(parts) == 2
+
+    # getpartitionnames
+    names = getpartitionnames(pool)
+    @test names == [:plants, :pollinators]
+end
+

@@ -39,8 +39,30 @@ getspeciesaxis(p::SpeciesPartition, name) = NamedTuple{Tuple((name,))}((getspeci
 
 numspecies(p::SpeciesPartition) = length(p)
 
-# Pretty printing
-function Base.show(io::IO, p::SpeciesPartition) 
+function Base.show(io::IO, p::SpeciesPartition)
     print(io, "SpeciesPartition with $(length(p)) species")
+end
+
+@testitem "SpeciesPartition constructors" begin
+    # From integer count
+    p = SpeciesPartition(5)
+    @test length(p) == 5
+
+    # Custom prefix
+    p2 = SpeciesPartition(3; prefix=:plant)
+    @test p2.names == [:plant1, :plant2, :plant3]
+
+    # From names
+    p3 = SpeciesPartition([:a, :b, :c])
+    @test length(p3) == 3
+    @test p3.names == [:a, :b, :c]
+end
+
+@testitem "SpeciesPartition Base methods" begin
+    p = SpeciesPartition([:a, :b, :c, :d])
+
+    @test length(p) == 4
+    @test numspecies(p) == 4
+    @test getspecies(p) == [:a, :b, :c, :d]
 end
 

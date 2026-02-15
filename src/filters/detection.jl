@@ -91,8 +91,7 @@ end
 AbundanceScaledDetection(abundance; scaling_mode = ExponentialDetectability(5.), combination_mode=DetectabilityProduct()) = AbundanceScaledDetection(abundance, scaling_mode, combination_mode)
 
 function _get_detection_rate(::NetworkLayer{Realized,UnipartiteSpeciesPool}, model::AbundanceScaledDetection)
-    abundances = model.abundance 
-    detect_probs = broadcast_dims(model.scaling_mode, abundances.data.data)
+    detect_probs = broadcast_dims(model.scaling_mode, parent(model.abundance))
     detect_probs2 = set(detect_probs, :species => :species2)
     detection_rate = @d broadcast_dims(model.combination_mode, detect_probs, detect_probs2)
     return detection_rate
@@ -100,20 +99,86 @@ end
 
 
 function _get_detection_rate(::NetworkLayer{Realized,BipartiteSpeciesPool}, model::AbundanceScaledDetection)
-    specieswise_detection = [model.scaling_mode.(x) for x in collect(values(model.abundance.data.dict))]
-    detection_rate = broadcast_dims(model.combination_mode,specieswise_detection...)
+    specieswise_detection = [model.scaling_mode.(x) for x in collect(values(model.abundance))]
+    detection_rate = broadcast_dims(model.combination_mode, specieswise_detection...)
     return detection_rate
 end
 
 function detect(
-    layer::NetworkLayer{Realized}, 
+    layer::NetworkLayer{Realized},
     model::AbundanceScaledDetection
-) 
+)
     realized = layer.data
     detect_rate = _get_detection_rate(layer, model)
     detected = broadcast_dims((n,p)-> n > 0 ? rand(Binomial(n,p)) : 0, realized, detect_rate)
 
     metadata = merge(layer.metadata, Dict(:detection_model => model))
     NetworkLayer(Detected(), getspecies(layer), detected, metadata)
+end
+
+# =================================================================================
+#
+# Tests
+#
+# =================================================================================
+
+@testitem "BinomialDetection works with a single probability value" begin
+    pool = UnipartiteSpeciesPool(5)
+    layer = generate(ErdosRenyi(1.0), pool)
+    abundance = generate(LogNormalAbundance(), pool)
+    model = MassActionRealization(abundance; energy=20.0)
+    realized = realize(layer, model)
+
+    # Scalar probability
+    det = BinomialDetection(prob=0.8)
+    detected = detect(realized, det)
+    @test detected isa NetworkLayer{Detected}
+
+    # Perfect detection 
+    det_perfect = BinomialDetection(prob=1.0)
+    detected_perfect = detect(realized, det_perfect)
+    @test detected_perfect.data == realized.data
+
+    # Zero detection 
+    det_zero = BinomialDetection(prob=0.0)
+    detected_zero = detect(realized, det_zero)
+    @test sum(detected_zero.data) == 0
+end
+
+@testitem "PerfectDetection" begin
+    pool = UnipartiteSpeciesPool(5)
+    layer = generate(ErdosRenyi(1.0), pool)
+    abundance = generate(LogNormalAbundance(), pool)
+    realized = realize(layer, MassActionRealization(abundance; energy=10.0))
+
+    detected = detect(realized, PerfectDetection())
+    @test detected isa NetworkLayer{Detected}
+    @test detected.data == realized.data
+end
+
+@testitem "AbundanceScaledDetection works with Unipartite" begin
+    pool = UnipartiteSpeciesPool(5)
+    layer = generate(ErdosRenyi(1.0), pool)
+    abundance = generate(LogNormalAbundance(), pool)
+    realized = realize(layer, MassActionRealization(abundance; energy=20.0))
+
+    model = AbundanceScaledDetection(abundance)
+
+    detected = detect(realized, model)
+    @test detected isa NetworkLayer{Detected}
+end
+
+@testitem "AbundanceScaledDetection works with Bipartite" begin
+    pool = BipartiteSpeciesPool(4, 3; partition_names=[:A, :B])
+    layer = generate(ErdosRenyi(1.0), pool)
+    abundance = generate(LogNormalAbundance(), pool)
+    realized = realize(layer, MassActionRealization(abundance; energy=20.0))
+
+    model = AbundanceScaledDetection(abundance;
+        scaling_mode=LinearDetectablity(3.0),
+        combination_mode=DetectabilityMean()
+    )
+    detected = detect(realized, model)
+    @test detected isa NetworkLayer{Detected}
 end
     

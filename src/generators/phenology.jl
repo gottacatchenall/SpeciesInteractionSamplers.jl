@@ -114,3 +114,30 @@ function generate(gen::GaussianMixturePhenology, n_times::Int; kwargs...)
     normalized_mixture = raw_mixture ./ maximum(raw_mixture)
     return normalized_mixture
 end
+
+
+@testitem "Phenology generation for Unipartite" begin
+    import SpeciesInteractionSamplers as SIS
+
+    pool = UnipartiteSpeciesPool(5)
+    gen = UniformPhenology()
+    phens = generate(gen, pool, 20)
+
+    @test phens isa Phenologies
+    @test numspecies(phens) == 5
+end
+
+@testitem "Phenology generation for Bipartite" begin
+    import SpeciesInteractionSamplers as SIS
+
+    pool = BipartiteSpeciesPool(3, 4; partition_names=[:A, :B])
+    gen = PoissonPhenology(3)
+    phens = generate(gen, pool, 15)
+
+    @test phens isa Phenologies
+    @test numspecies(phens) == 7
+    @test haskey(phens, :A)
+    @test haskey(phens, :B)
+    @test size(phens[:A], 1) == 3
+    @test size(phens[:B], 1) == 4
+end

@@ -20,7 +20,6 @@ function generate(
     gen::ErdosRenyi,
     pool::UnipartiteSpeciesPool; 
 )
-    species_names = species(pool)
     metaweb = rand(numspecies(pool), numspecies(pool)) .< gen.connectance
     metadata = Dict{Symbol,Any}(
         :generator => gen,
@@ -28,10 +27,9 @@ function generate(
     feasible_network = NetworkLayer(
         Feasible(),
         pool,
-        NamedArray(
+        DimArray(
             metaweb,
-            names=(species_names, species_names), 
-            dimnames=(:species, :species)
+            (species=getspecies(pool), species2=getspecies(pool))
         ),
         metadata
     )
@@ -101,23 +99,33 @@ function generate(
 end
 
 
-# ====================================================================================
-#
-# Stochastic Block Model 
-#
-# ====================================================================================
+@testitem "ErdosRenyi generator" begin
+    pool = UnipartiteSpeciesPool(10)
 
-"""
-    StochasticBlockModel
+    # Unipartite 
+    gen = ErdosRenyi(0.3)
+    layer = generate(gen, pool)
+    @test layer isa NetworkLayer{Feasible}
+    @test numspecies(layer) == 10
+    @test size(layer) == (10, 10)
 
-- Q here is how to structure fields to support uni and multipartite graphs
-"""
-struct StochasticBlockModel <: NetworkGenerator
-    degree_sequence::Vector{Int}
+
+    # Bipartite
+    bpool = BipartiteSpeciesPool(5, 3; partition_names=[:prey, :predator])
+    layer_bp = generate(ErdosRenyi(0.5), bpool)
+    @test layer_bp isa NetworkLayer{Feasible}
+    @test layer_bp.species isa BipartiteSpeciesPool
+    @test numspecies(layer_bp) == 8
 end
 
-# 
-function generate(::StochasticBlockModel, pool::UnipartiteSpeciesPool)
+@testitem "NicheModel generator" begin
+    pool = UnipartiteSpeciesPool(20)
+    gen = NicheModel(0.15)
+    layer = generate(gen, pool)
 
+    @test layer isa NetworkLayer{Feasible}
+    @test layer.state isa Feasible
+    @test numspecies(layer) == 20
+    @test size(layer) == (20, 20)
 end
 

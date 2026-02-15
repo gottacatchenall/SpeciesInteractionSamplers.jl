@@ -53,3 +53,28 @@ end
 function SpatiotemporalContext(ranges::Ranges, phenologies::Phenologies; metadata=Dict{Symbol,Any}())
     SpatiotemporalContext(ranges, phenologies, metadata)
 end
+
+@testitem "SpatiotemporalContext constructors" begin
+    pool = UnipartiteSpeciesPool(4)
+    ranges = generate(AutocorrelatedRange(), pool, (8, 8))
+    phens = generate(UniformPhenology(), pool, 10)
+
+    # Spatial only
+    context_spatial = SpatiotemporalContext(ranges)
+    @test context_spatial.ranges isa Ranges
+    @test context_spatial.phenologies === missing
+    @test numspecies(context_spatial) == 4
+
+    # Temporal only
+    context_temporal = SpatiotemporalContext(phens)
+    @test context_temporal.ranges === missing
+    @test context_temporal.phenologies isa Phenologies
+    @test numspecies(context_temporal) == 4
+
+    # Both
+    context_full = SpatiotemporalContext(ranges, phens)
+    @test context_full.ranges isa Ranges
+    @test context_full.phenologies isa Phenologies
+    @test numspecies(context_full) == 4
+
+end
