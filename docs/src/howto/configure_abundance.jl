@@ -25,17 +25,17 @@ lognormal_even = generate(LogNormalAbundance(σ=0.5), pool)
 
 # Visualize:
 
-# fig-lognormal-abundance
-fig = Figure(size=(700, 300))
-ax1 = Axis(fig[1,1], title="Even (σ=0.5)", xlabel="Species rank", ylabel="Relative abundance")
+# fig-lognormal
+fig_lognorm = Figure(size=(700, 300))
+ax1 = Axis(fig_lognorm[1,1], title="Even (σ=0.5)", xlabel="Species rank", ylabel="Relative abundance")
 barplot!(ax1, 
     sort(collect(collect(parent(lognormal_even))), rev=true)
 )
-ax2 = Axis(fig[1,2], title="Default (σ=1.0)", xlabel="Species rank", ylabel="Relative abundance")
+ax2 = Axis(fig_lognorm[1,2], title="Default (σ=1.0)", xlabel="Species rank", ylabel="Relative abundance")
 barplot!(ax2, sort(collect(collect(parent(lognormal_default))), rev=true))
-ax3 = Axis(fig[1,3], title="Uneven (σ=2.0)", xlabel="Species rank", ylabel="Relative abundance")
+ax3 = Axis(fig_lognorm[1,3], title="Uneven (σ=2.0)", xlabel="Species rank", ylabel="Relative abundance")
 barplot!(ax3, sort(collect(collect(parent(lognormal_uneven))), rev=true))
-fig #hide    
+fig_lognorm #hide     
 
 # ## Using PowerLawAbundance
 
@@ -49,13 +49,13 @@ power_steep = generate(PowerLawAbundance(exponent=2.0), pool)
 
 # Visualize:
 
-# fig-powerlaw-abundance
-fig2 = Figure(size=(500, 300))
-ax = Axis(fig2[1,1], xlabel="Species rank", ylabel="Relative abundance",
+# fig-powerlaw
+fig_powerlaw = Figure(size=(500, 300))
+ax = Axis(fig_powerlaw[1,1], xlabel="Species rank", ylabel="Relative abundance",
     title="Power Law Abundance")
 barplot!(ax, 1:numspecies(pool), sort(collect(parent(power_default)), rev=true),
     color=:steelblue, label="exponent=1.0")
-fig2 #hide
+fig_powerlaw #hide
 
 
 # ## Using Custom Distributions
