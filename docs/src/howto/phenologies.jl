@@ -45,7 +45,8 @@ ax2 = Axis(fig[1,2], title="Long Phenologies (μ=20)", xlabel="Time", ylabel="Sp
 heatmap!(ax2, Matrix(parent(long_phens))', colormap=[:white, :steelblue])
 fig #hide
 
-#
+# Now let's consider phenologies that reflect density, instead of binary occurrence.
+# 
 
 # ## Using GaussianMixturePhenology
 
@@ -82,6 +83,9 @@ heatmap!(ax1, Matrix(parent(single_peak))', colormap=:viridis)
 ax2 = Axis(fig2[1,2], title="Multiple Peaks", xlabel="Time", ylabel="Species")
 heatmap!(ax2, Matrix(parent(multi_peak))', colormap=:viridis)
 fig2 #hide
+
+# Now let's use these for sampling
+# 
 
 # ## Creating a Temporal Context
 
