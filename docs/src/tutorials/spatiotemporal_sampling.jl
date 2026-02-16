@@ -76,7 +76,7 @@ println("Dimensions: species × species × x × y")
 
 # Let's see how the number of potential interactions varies across the landscape:
 
-potential_per_location = dropdims(sum(potential.data, dims=(1,2)), dims=(1,2))
+potential_per_location = dropdims(sum(potential.data, dims=(1,2)), dims=(1,2));
 
 # fig-potential
 fig2 = Figure()
@@ -166,11 +166,11 @@ phens_gaussian = generate(GaussianMixturePhenology(num_components=2), pool, n_ti
 
 # fig-generators
 fig5 = Figure(size=(800, 400))
-ax1 = Axis(fig5[1,1], title="Poisson Phenology", xlabel="Time", ylabel="Species")
+ax1 = Axis(fig5[1,1], title="Poisson Phenology", xlabel="Time", ylabel="Species", aspect=1)
 heatmap!(ax1, Matrix(parent(phenologies))', colormap=:viridis)
-ax2 = Axis(fig5[1,2], title="Uniform Phenology", xlabel="Time", ylabel="Species")
+ax2 = Axis(fig5[1,2], title="Uniform Phenology", xlabel="Time", ylabel="Species", aspect=1)
 heatmap!(ax2, Matrix(parent(phens_uniform))', colormap=:viridis)
-ax3 = Axis(fig5[2,1:2], title="Gaussian Mixture Phenology", xlabel="Time", ylabel="Species")
+ax3 = Axis(fig5[1,3], title="Gaussian Mixture Phenology", xlabel="Time", ylabel="Species", aspect=1)
 heatmap!(ax3, Matrix(parent(phens_gaussian))', colormap=:viridis)
 fig5 #hide
 
