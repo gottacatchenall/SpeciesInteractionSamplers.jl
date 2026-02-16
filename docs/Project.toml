@@ -1,13 +1,21 @@
 [deps]
+BiodiversityObservationNetworks = "a5b868d3-191d-4bba-a38a-ad28190da010"
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 DocumenterCitations = "daee34ce-89f3-4625-b898-19384cb65244"
 DocumenterTools = "35a29f4d-8980-5a13-9543-d66fff28ecb8"
 DocumenterVitepress = "4710194d-e776-4893-9690-8d956a29c365"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
 NeutralLandscapes = "71847384-8354-4223-ac08-659a5128069f"
+PrettyTables = "08abe8d2-0d0c-5749-adfa-8a2ac140af0d"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+SpeciesInteractionSamplers = "52128aff-513d-4647-bfdb-f540a36539f5"
 Term = "22787eb5-b846-44ae-b979-8e399b8463ab"
 TestItems = "1c621080-faea-4a02-84b6-bbd5e436b8fe"
-UnicodePlots = "b8865327-cd53-5732-bb35-84acbb429228"
+
+[sources]
+SpeciesInteractionSamplers = {path = ".."}

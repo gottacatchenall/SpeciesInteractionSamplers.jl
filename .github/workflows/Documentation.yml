@@ -1,33 +1,50 @@
 name: Documentation
 
 on:
-  release:
   push:
     branches:
       - main
     tags: '*'
   pull_request:
 
+concurrency:
+    group: doc-build-pipeline
+    cancel-in-progress: ${{ !contains(github.ref, 'main')}}
+
 jobs:
-  build:
-    name: "Build the documentation"
+  Documentation:
+    permissions:
+      actions: write
+      contents: write
+      pull-requests: read
+      statuses: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: julia-actions/setup-julia@latest
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
         with:
-          version: '1.12'
-      - name: Install SINs.jl
-        run: julia --project=. -e 'using Pkg; Pkg.add(url="https://github.com/PoisotLab/SpeciesInteractionNetworks.jl")'
-      - uses: julia-actions/julia-buildpkg@latest
-      - name: Install documentation dependencies
-        run: julia --project=docs -e 'using Pkg; Pkg.add(url="https://github.com/PoisotLab/SpeciesInteractionNetworks.jl"); pkg"dev .";  Pkg.instantiate(); Pkg.precompile(); Pkg.status()'
-      #- name: Creating new mds from src
-      - name: Build and deploy docs
-        uses: julia-actions/julia-docdeploy@v1
+          version: '1'
+      - uses: julia-actions/cache@v2
+      - name: Install dependencies
+        run: julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
+      - name: Build howto
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For authentication with GitHub Actions token
-          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }} # For authentication with SSH deploy key
-          GKSwstype: "100" # for Plots.jl plots (if you have them)
-          JULIA_DEBUG: "Documenter"
+          NODE_OPTIONS: "--max_old_space_size=4096"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
           DATADEPS_ALWAYS_ACCEPT: true
+        run: julia --project=docs/ --threads=auto docs/build.jl howto
+      - name: Build tutorials
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+          DATADEPS_ALWAYS_ACCEPT: true
+        run: julia --project=docs/ --threads=auto docs/build.jl tutorials
+      - name: Build case studies
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+          DATADEPS_ALWAYS_ACCEPT: true
+        run: julia --project=docs/ --threads=auto docs/make.jl

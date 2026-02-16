@@ -2,8 +2,6 @@ using Documenter, DocumenterVitepress
 
 using SpeciesInteractionSamplers
 
-SpeciesInteractionSamplers.INTERACTIVE_REPL = false
-
 makedocs(;
     modules=[SpeciesInteractionSamplers],
     authors="Michael D. Catchen",
@@ -17,13 +15,20 @@ makedocs(;
         "Home" => "index.md",
         "Tutorials" => [
             "Getting Started" => joinpath("tutorials", "getting_started.md"),
-            "Model Customization" => [
-                "Custom Network Generator" => joinpath("tutorials", "custom", "network_generator.md")
-            ]
+            "Bipartite Networks" => joinpath("tutorials", "bipartite_networks.md"),
+            "Spatiotemporal Sampling" => joinpath("tutorials", "spatiotemporal_sampling.md"),
+        ],
+        "How-To Guides" => [
+            "Generating Networks" => joinpath("howto", "generate_networks.md"),
+            "Spatial Networks" => joinpath("howto", "ranges.md"),
+            "Temporal Networks" => joinpath("howto", "phenologies.md"),
+            "Configuring Abundances" => joinpath("howto", "configure_abundance.md"),
+            "Realization Models" => joinpath("howto", "realization_models.md"),
+            "Detection Models" => joinpath("howto", "detection_models.md"),
         ],
         "Reference" => [
-            #joinpath("reference", "internal.md"),
-            joinpath("reference", "public.md")
+            "Public API" => joinpath("reference", "public.md"),
+            "Internal API" => joinpath("reference", "internal.md"),
         ],
     ],
     warnonly=true,
@@ -33,5 +38,3 @@ DocumenterVitepress.deploydocs(;
     repo="github.com/gottacatchenall/SpeciesInteractionSamplers.jl",
     push_preview=true,
 )
-
-

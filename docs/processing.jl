@@ -1,0 +1,39 @@
+function pre!(content)
+    return content |> pre_collapse_figure
+end
+
+function post!(content)
+    return content |> post_extract_table
+end
+
+function pre_collapse_figure(content)
+    fig_hash = string(hash(rand(100)))
+    
+    matcher = r"# fig-(?<title>[\w-]+)\n(?<code>(?>^[^#].*\n){1,})(?<figvar>\w+) #hide"m
+    replacement_template = """
+    # ![](HASH-\\g<title>.png)
+
+
+    # ::: details Code for the figure
+
+    \\g<code>save("HASH-\\g<title>.png", \\g<figvar>); #hide
+
+    # :::
+    """
+    replacer = SubstitutionString(replace(replacement_template, "HASH" => fig_hash))
+
+    #@info content
+    @info match(r"# fig-(?<title>[\w-]+)\n(?<code>(?>^[^#].*\n){1,})(?<figvar>\w+) #hide"m, content)
+
+    content = replace(content, matcher => replacer)
+    return content
+end
+
+function post_extract_table(content)
+    matcher = r"^`+$\n(?<table>(^\|.+\|$\n)+)\n`+$"m
+    replacer = """
+    \\g<table>
+    """ |> SubstitutionString
+    content = replace(content, matcher => replacer)
+    return content
+end
