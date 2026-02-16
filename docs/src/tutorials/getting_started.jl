@@ -126,10 +126,10 @@ fig2 #hide
 
 # Now that you understand the basic pipeline, you can explore:
 #
-# - [**Adding spatial structure**](howto/ranges) with `Ranges` and `AutocorrelatedRange`
-# - [**Adding temporal structure**](howto/phenologies) with `Phenologies`
-# - [**Bipartite networks**](tutorials/bipartite_networks) (e.g., plant-pollinator) with `BipartiteSpeciesPool`
-# - [**Different realization models](howto/realization_models)
-# - [**Different detection models**](howto/detection_models) 
+# - [**Adding spatial structure**](/howto/ranges) with `Ranges` and `AutocorrelatedRange`
+# - [**Adding temporal structure**](/howto/phenologies) with `Phenologies`
+# - [**Bipartite networks**](/tutorials/bipartite_networks) (e.g., plant-pollinator) with `BipartiteSpeciesPool`
+# - [**Different realization models](/howto/realization_models)
+# - [**Different detection models**](/howto/detection_models) 
 #
 # See the other tutorials and how-to guides for more details.
