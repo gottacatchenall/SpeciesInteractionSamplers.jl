@@ -68,7 +68,7 @@ spatial_probs = DimArray(
 )
 
 detected_spatial = detect(realized_spatial, BinomialDetection(spatial_probs))
-total_per_site = dropdims(sum(detected_spatial.data, dims=(:species, :species2)), dims=(:species, :species2))
+total_per_site = dropdims(sum(detected_spatial.data, dims=(:species, :species2)), dims=(:species, :species2));
 
 # fig-spatial-detection
 fig_sp = Figure(size=(900, 350))
@@ -101,7 +101,7 @@ pair_probs = DimArray(
 )
 
 detected_species = detect(realized_spatial, BinomialDetection(pair_probs))
-total_per_pair = dropdims(sum(detected_species.data, dims=(:x, :y)), dims=(:x, :y))
+total_per_pair = dropdims(sum(detected_species.data, dims=(:x, :y)), dims=(:x, :y));
 
 # fig-pairwise-detection
 fig_pair = Figure(size=(700, 350))
